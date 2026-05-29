@@ -98,13 +98,18 @@ main{max-width:680px;margin:0 auto;padding:1.5rem 1rem 4rem}
 .insight-info{flex:1}
 .insight-titulo{font-size:14px;font-weight:500;color:#111;margin-bottom:2px}
 .insight-desc{font-size:12px;color:#777;line-height:1.5}
-.semana-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
-.dia-card{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:8px 4px;text-align:center}
-.dia-nome{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#999;margin-bottom:4px}
-.dia-tipo{font-size:18px;margin-bottom:4px}
-.dia-lbl{font-size:9px;color:#666;line-height:1.3}
+.semana-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.dia-card{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px}
 .dia-card.hoje{border-color:#111;background:#111}
-.dia-card.hoje .dia-nome,.dia-card.hoje .dia-lbl{color:#888}
+.dia-nome{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#999;width:36px;flex-shrink:0;text-align:center}
+.dia-card.hoje .dia-nome{color:#555}
+.dia-tipo{font-size:22px;flex-shrink:0}
+.dia-info{flex:1}
+.dia-lbl{font-size:13px;font-weight:600;color:#111;margin-bottom:2px}
+.dia-card.hoje .dia-lbl{color:#fff}
+.dia-sub{font-size:11px;color:#999;line-height:1.3}
+.dia-card.hoje .dia-sub{color:#666}
+.dia-badge-hoje{font-size:10px;font-weight:700;background:var(--neon);color:#111;padding:2px 8px;border-radius:100px;flex-shrink:0}
 .estr-modo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
 .estr-modo-btn{border:1px solid var(--borda);background:#fff;border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
 .estr-modo-btn:hover{border-color:#999}
@@ -713,12 +718,20 @@ async function buscarYT(q) {
 }
 
 async function buscarGSearch(q) {
-  if (!cfg.google) throw new Error('Google Cloud API Key não configurada');
+  if (!cfg.google) throw new Error('Google Cloud API Key não configurada — vá em ⚙ Config');
   const cx = cfg.cx || CX_DEFAULT;
   const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(q)}&cx=${cx}&num=5&hl=pt&gl=br&key=${cfg.google}`;
   const r = await fetch(url);
-  if (!r.ok) throw new Error('Erro Custom Search API — verifique sua Google Cloud Key');
-  return (await r.json()).items || [];
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    const msg = err.error?.message || '';
+    if (msg.includes('API key')) throw new Error('Google Cloud Key inválida ou Custom Search API não ativada no projeto');
+    if (msg.includes('cx') || msg.includes('Search Engine')) throw new Error('Search Engine ID (CX) inválido');
+    throw new Error(`Erro Custom Search: ${msg || r.status}`);
+  }
+  const data = await r.json();
+  if (!data.items?.length) throw new Error('Nenhum resultado encontrado — tente outra busca');
+  return data.items;
 }
 
 async function imgB64(file) {
@@ -909,10 +922,31 @@ ${hashtags_instrucao}
   return p[tipo] || p.carrossel;
 }
 
+const _clipboard = {};
+let _clipIdx = 0;
+
+function _copiar(idx) {
+  const txt = _clipboard[idx];
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(() => mostrarToast('✓ Copiado!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    mostrarToast('✓ Copiado!');
+  });
+}
+
+function _reg(txt) {
+  const idx = ++_clipIdx;
+  _clipboard[idx] = txt;
+  return idx;
+}
+
 function renderResultado(texto) {
   const secs = parseSecs(texto);
   let html = '<div style="margin-top:1.5rem">';
-  html += `<div class="res-header"><div class="res-titulo">Conteúdo gerado</div><button class="btn-copy" onclick="copiarTudo()">📋 Copiar tudo</button></div>`;
+  const idxTudo = _reg(texto);
+  html += `<div class="res-header"><div class="res-titulo">Conteúdo gerado</div><button class="btn-copy" onclick="_copiar(${idxTudo})">📋 Copiar tudo</button></div>`;
   secs.forEach(s => {
     html += `<div class="res-bloco"><div class="res-bloco-titulo">${s.t}</div>`;
     if (s.t.includes('HASHTAG') || s.t.includes('hashtag')) {
@@ -931,7 +965,8 @@ function renderResultado(texto) {
     } else {
       html += `<div class="res-texto">${s.c}</div>`;
     }
-    html += `<button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar seção</button></div>`;
+    const idx = _reg(s.c);
+    html += `<button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="_copiar(${idx})">Copiar seção</button></div>`;
   });
   html += '</div>';
   document.getElementById('resultado-area').innerHTML = html;
@@ -1152,10 +1187,12 @@ ${postsData.map(p => `Post ${p.num}: ${p.tipo} | Alcance: ${p.alcance} | Curtida
 function renderEstrategia(texto) {
   const secs = parseSecs(texto);
   const icons = { DIAGNÓSTICO:'🔍', FORTES:'✅', ATENÇÃO:'⚠️', ALGORITMO:'🤖', RECOMENDAÇÕES:'🎯', PRÓXIMO:'➡️', CRESCIMENTO:'📈', ENGAJAMENTO:'❤️', ESTRATÉGIA:'🗺️', CALENDÁRIO:'📅', META:'🏆', RANKING:'🥇', PADRÕES:'🔄', CAMPEÃO:'🏆', PARAR:'🛑', DOBRAR:'🚀', FÓRMULA:'✨' };
-  let html = `<div style="margin-top:1rem"><div class="res-header"><div class="res-titulo">Análise estratégica</div><button class="btn-copy" onclick="navigator.clipboard.writeText(${JSON.stringify(texto)}).then(()=>mostrarToast('✓ Copiado!'))">📋 Copiar</button></div>`;
+  const idxTudo = _reg(texto);
+  let html = `<div style="margin-top:1rem"><div class="res-header"><div class="res-titulo">Análise estratégica</div><button class="btn-copy" onclick="_copiar(${idxTudo})">📋 Copiar</button></div>`;
   secs.forEach(s => {
     const icon = Object.entries(icons).find(([k]) => s.t.toUpperCase().includes(k))?.[1] || '💡';
-    html += `<div class="res-bloco"><div class="res-bloco-titulo">${icon} ${s.t}</div><div class="res-texto">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar</button></div>`;
+    const idx = _reg(s.c);
+    html += `<div class="res-bloco"><div class="res-bloco-titulo">${icon} ${s.t}</div><div class="res-texto">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="_copiar(${idx})">Copiar</button></div>`;
   });
   html += '</div>';
   document.getElementById('estr-resultado').innerHTML = html;
@@ -1257,18 +1294,36 @@ Seja direto e prático. Foco em um negócio local premium.`;
   let html = '';
   secs.forEach(s => {
     const icon = Object.entries(icons).find(([k]) => s.t.toUpperCase().includes(k))?.[1] || '💡';
-    html += `<div class="card"><div class="card-titulo">${icon} ${s.t}</div><div style="font-size:14px;line-height:1.7;color:#333;white-space:pre-wrap;margin-top:8px">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar</button></div>`;
+    const idx = _reg(s.c);
+    html += `<div class="card"><div class="card-titulo">${icon} ${s.t}</div><div style="font-size:14px;line-height:1.7;color:#333;white-space:pre-wrap;margin-top:8px">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="_copiar(${idx})">Copiar</button></div>`;
   });
   document.getElementById('intel-resultado').innerHTML = html;
 }
 
 function renderCalendario() {
-  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const tipos = ['🏆','📸','🎓','🎬','🔥','🎯','✨'];
-  const labels = ['Destaque','Antes/Depois','Educativo','Bastidor','Inspiracional','Oferta','Resultado'];
+  const labels = ['Destaque da semana','Antes/Depois','Conteúdo educativo','Bastidor do processo','Post inspiracional','Oferta / agenda','Resultado ao vivo'];
+  const subs = [
+    'Melhor resultado do fim de semana',
+    'Carrossel comparativo — gancho direto',
+    'Ensina, gera salvamento e autoridade',
+    'Mostra processo e dedicação',
+    'Fé, superação, propósito pessoal',
+    'CTA direto — vagas limitadas',
+    'Story do processo acontecendo agora'
+  ];
   const hoje = new Date().getDay();
   document.getElementById('semana-grid').innerHTML = dias.map((d,i) =>
-    `<div class="dia-card ${i===hoje?'hoje':''}"><div class="dia-nome">${d}</div><div class="dia-tipo">${tipos[i]}</div><div class="dia-lbl">${labels[i]}</div></div>`
+    `<div class="dia-card ${i===hoje?'hoje':''}">
+      <div class="dia-nome">${d.slice(0,3)}</div>
+      <div class="dia-tipo">${tipos[i]}</div>
+      <div class="dia-info">
+        <div class="dia-lbl">${labels[i]}</div>
+        <div class="dia-sub">${subs[i]}</div>
+      </div>
+      ${i===hoje ? '<div class="dia-badge-hoje">Hoje</div>' : ''}
+    </div>`
   ).join('');
 }
 

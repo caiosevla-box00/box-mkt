@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOX MKT — Estética Automotiva</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--neon:#c8ff00;--borda:#e0e0dc;--bg:#f5f5f0;--suave:#666;--card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#111;min-height:100vh}
+header{background:#111;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--neon)}
+.logo span{color:#555;font-weight:400;font-size:13px;margin-left:8px}
+.btn-cfg{background:#222;border:1px solid #333;color:#999;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-cfg:hover{border-color:var(--neon);color:var(--neon)}
+nav{background:#fff;border-bottom:1px solid var(--borda);display:flex;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.tab{padding:14px 16px;font-size:13px;font-weight:500;color:var(--suave);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif}
+.tab.ativo{color:#111;border-bottom-color:#111}
+main{max-width:680px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.secao{display:none}.secao.ativa{display:block}
+.card{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.card-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px;color:#111}
+.card-desc{font-size:13px;color:var(--suave);margin-bottom:1.25rem;line-height:1.5}
+.checklist-grupo{margin-bottom:1.5rem}
+.checklist-grupo-titulo{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--borda)}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f0;cursor:pointer;transition:all .15s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:#fafaf8;border-radius:8px;padding-left:8px}
+.check-box{width:20px;height:20px;border:2px solid #ddd;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.check-item.marcado .check-box{background:#111;border-color:#111}
+.check-item.marcado .check-box::after{content:'✓';color:var(--neon);font-size:12px;font-weight:700}
+.check-nome{font-size:14px;font-weight:500;color:#222;line-height:1.4}
+.check-item.marcado .check-nome{text-decoration:line-through;color:#aaa}
+.check-dica{font-size:12px;color:#999;margin-top:2px;line-height:1.4}
+.prog-wrap{background:#f0f0ec;border-radius:100px;height:6px;margin-bottom:1.5rem;overflow:hidden}
+.prog-bar{height:100%;background:#111;border-radius:100px;transition:width .3s ease}
+.prog-label{font-size:12px;color:#999;margin-bottom:8px;display:flex;justify-content:space-between}
+.tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.tipo-btn{border:1px solid var(--borda);background:#fff;border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.tipo-btn:hover{border-color:#999}
+.tipo-btn.ativo{background:#111;border-color:#111;color:#fff}
+.tipo-btn .ti{font-size:20px;margin-bottom:4px;display:block}
+.tipo-btn .tnome{font-size:11px;font-weight:500}
+.tipo-btn.ativo .tnome{color:var(--neon)}
+.upload-area{border:2px dashed #ddd;border-radius:10px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:1rem;position:relative}
+.upload-area:hover{border-color:#111;background:#fafaf8}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.prev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:1rem}
+.prev-img{aspect-ratio:1;border-radius:8px;overflow:hidden;position:relative;background:#f0f0ec}
+.prev-img img{width:100%;height:100%;object-fit:cover}
+.prev-img .rm{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.prev-img .bdg{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.7);color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:500}
+.campo-grupo{margin-bottom:1rem}
+.campo-label{font-size:12px;font-weight:500;color:#555;margin-bottom:6px;display:block}
+.campo-input,.campo-select,.campo-textarea{width:100%;background:#fafaf8;border:1px solid var(--borda);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'Inter',sans-serif;color:#111;transition:border-color .15s}
+.campo-input:focus,.campo-select:focus,.campo-textarea:focus{outline:none;border-color:#111}
+.campo-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.btn-gerar{background:#111;color:var(--neon);border:none;border-radius:10px;padding:14px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;width:100%;transition:all .2s;letter-spacing:.3px}
+.btn-gerar:hover{background:#222;transform:translateY(-1px)}
+.btn-gerar:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-sec{background:#f0f0ec;border:1px solid var(--borda);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;color:#333}
+.btn-sec:hover{background:#111;color:var(--neon);border-color:#111}
+.res-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.res-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
+.btn-copy{background:#f0f0ec;border:1px solid var(--borda);border-radius:7px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;color:#333}
+.btn-copy:hover{background:#111;color:var(--neon);border-color:#111}
+.res-bloco{background:#fafaf8;border:1px solid var(--borda);border-radius:10px;padding:1.25rem;margin-bottom:10px}
+.res-bloco-titulo{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#999;margin-bottom:10px}
+.res-texto{font-size:14px;line-height:1.7;color:#222;white-space:pre-wrap}
+.htag-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.htag{background:#f0f0ec;color:#444;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:500}
+.htag.grande{background:#111;color:var(--neon)}
+.htag.media{background:#e8f5e9;color:#2e7d32}
+.htag.local{background:#e3f2fd;color:#1565c0}
+.score-wrap{display:flex;align-items:center;gap:12px;padding:12px;background:#f5f5f0;border-radius:8px;margin-bottom:10px}
+.score-num{font-family:'Syne',sans-serif;font-weight:800;font-size:28px}
+.score-info{flex:1}
+.score-lbl{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.score-bar-w{background:#ddd;border-radius:100px;height:4px;margin-top:6px;overflow:hidden}
+.score-bar{height:100%;border-radius:100px;transition:width .5s}
+.load-wrap{text-align:center;padding:2.5rem 1rem}
+.load-icon{font-size:32px;animation:spin 1s linear infinite;display:block;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-txt{font-size:14px;color:#666;font-weight:500}
+.load-sub{font-size:12px;color:#999;margin-top:4px}
+.intel-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.intel-tab{background:#f0f0ec;border:1px solid var(--borda);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;color:#555}
+.intel-tab.ativo{background:#111;color:var(--neon);border-color:#111}
+.insight-card{background:#fff;border:1px solid var(--borda);border-radius:10px;padding:1rem 1.25rem;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.insight-icon{font-size:20px;width:36px;height:36px;background:#f0f0ec;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.insight-info{flex:1}
+.insight-titulo{font-size:14px;font-weight:500;color:#111;margin-bottom:2px}
+.insight-desc{font-size:12px;color:#777;line-height:1.5}
+.semana-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.dia-card{background:#fff;border:1px solid var(--borda);border-radius:8px;padding:8px 4px;text-align:center}
+.dia-nome{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#999;margin-bottom:4px}
+.dia-tipo{font-size:18px;margin-bottom:4px}
+.dia-lbl{font-size:9px;color:#666;line-height:1.3}
+.dia-card.hoje{border-color:#111;background:#111}
+.dia-card.hoje .dia-nome,.dia-card.hoje .dia-lbl{color:#888}
+.estr-modo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.estr-modo-btn{border:1px solid var(--borda);background:#fff;border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.estr-modo-btn:hover{border-color:#999}
+.estr-modo-btn.ativo{background:#111;border-color:#111;color:#fff}
+.estr-modo-btn .em-icon{font-size:22px;margin-bottom:6px;display:block}
+.estr-modo-btn .em-nome{font-size:12px;font-weight:600}
+.estr-modo-btn.ativo .em-nome{color:var(--neon)}
+.estr-modo-btn .em-desc{font-size:10px;color:#999;margin-top:2px;line-height:1.3}
+.estr-modo-btn.ativo .em-desc{color:#555}
+.metrica-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.metrica-item{background:#fafaf8;border:1px solid var(--borda);border-radius:8px;padding:10px 12px}
+.metrica-label{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.metrica-label span{font-size:14px}
+.metrica-input{width:100%;background:transparent;border:none;font-size:18px;font-family:'Syne',sans-serif;font-weight:700;color:#111;outline:none}
+.metrica-input::placeholder{color:#ccc;font-size:16px}
+.periodo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.alerta-banner{background:#111;color:#fff;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.alerta-banner .al-icon{font-size:24px;flex-shrink:0}
+.alerta-banner .al-info{flex:1}
+.alerta-banner .al-titulo{font-size:14px;font-weight:600;color:#fff}
+.alerta-banner .al-desc{font-size:12px;color:#888;margin-top:2px}
+.al-btn{background:var(--neon);color:#111;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;white-space:nowrap}
+.cfg-field{margin-bottom:1.25rem}
+.cfg-lbl{font-size:11px;font-weight:600;color:#444;margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.cfg-desc{font-size:12px;color:#999;margin-bottom:8px;line-height:1.5}
+.cfg-uses{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cfg-use-tag{font-size:11px;background:#f0f0ec;color:#666;padding:2px 8px;border-radius:100px;border:1px solid var(--borda)}
+.cfg-st{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:100px;font-weight:500;margin-left:8px}
+.cfg-st.ok{background:#dcfce7;color:#16a34a}
+.cfg-st.vazio{background:#f0f0ec;color:#999}
+.cfg-link{font-size:11px;color:#555;text-decoration:none;display:inline-block;margin-top:4px}
+.cfg-link:hover{color:#111}
+.api-wrap{position:relative}
+.api-wrap input{width:100%;background:#fafaf8;border:1px solid var(--borda);border-radius:8px;padding:10px 40px 10px 12px;font-size:13px;font-family:'Inter',sans-serif;color:#111}
+.api-wrap input:focus{outline:none;border-color:#111}
+.api-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#999;padding:4px}
+.btn-save{background:#111;color:#fff;border:none;border-radius:8px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;width:100%;margin-top:4px;transition:background .15s}
+.btn-save:hover{background:#333}
+.btn-reset{background:none;border:1px solid var(--borda);color:var(--suave);padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;width:100%;margin-top:8px}
+.btn-reset:hover{border-color:#999;color:#333}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+.modal-overlay.aberto{display:flex}
+.modal{background:#fff;border-radius:14px;padding:1.5rem;width:100%;max-width:460px;margin:auto}
+.modal-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:1.5rem}
+.modal-sec{border-top:1px solid var(--borda);padding-top:1.25rem;margin-top:1.25rem}
+.modal-sec-titulo{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:1rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:#111;color:#fff;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:500;z-index:300;transition:transform .3s ease;white-space:nowrap}
+.toast.visivel{transform:translateX(-50%) translateY(0)}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:#999}
+.empty-icon{font-size:36px;margin-bottom:12px}
+.empty-titulo{font-size:15px;font-weight:500;color:#555;margin-bottom:6px}
+.empty-desc{font-size:13px;line-height:1.5}
+.divider{border:none;border-top:1px solid var(--borda);margin:1rem 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">BOX MKT <span>@box0.0_</span></div>
+  <button class="btn-cfg" onclick="abrirConfig()">⚙ Config</button>
+</header>
+
+<nav>
+  <button class="tab ativo" onclick="mudarAba('checklist',this)">📋 Checklist</button>
+  <button class="tab" onclick="mudarAba('estudio',this)">🎨 Estúdio</button>
+  <button class="tab" onclick="mudarAba('estrategia',this)">📊 Estratégia</button>
+  <button class="tab" onclick="mudarAba('calendario',this)">📅 Calendário</button>
+  <button class="tab" onclick="mudarAba('inteligencia',this)">🧠 Inteligência</button>
+</nav>
+
+<main>
+
+<!-- CHECKLIST -->
+<div id="aba-checklist" class="secao ativa">
+  <div class="card">
+    <div class="card-titulo">Checklist de Atendimento</div>
+    <div class="card-desc">Siga esse roteiro durante o atendimento. Cada foto aqui vira conteúdo no Estúdio.</div>
+    <div class="prog-label"><span id="check-label">0 de 14 itens</span><span id="check-pct">0%</span></div>
+    <div class="prog-wrap"><div class="prog-bar" id="check-prog" style="width:0%"></div></div>
+  </div>
+  <div class="card">
+    <div class="checklist-grupo">
+      <div class="checklist-grupo-titulo">🚗 Chegada do carro</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Foto frontal (ângulo 45°) — carro sujo</div><div class="check-dica">Canto frontal direito, carro inteiro no quadro</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Foto lateral completa</div><div class="check-dica">~4 metros de distância, carro inteiro de perfil</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Close do ponto mais crítico</div><div class="check-dica">Roda suja, mancha, vidro embaçado, farol opaco</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Vídeo panorâmico 5-10 segundos</div><div class="check-dica">Caminhe lentamente ao redor com câmera estável</div></div></div>
+    </div>
+    <div class="checklist-grupo">
+      <div class="checklist-grupo-titulo">⚡ Durante o serviço</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Produto sendo aplicado (close)</div><div class="check-dica">Mãos, espuma, produto — mostra capricho</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Diferença visível em tempo real</div><div class="check-dica">Metade limpa vs metade suja — impacto visual</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Detalhe do equipamento / produto</div><div class="check-dica">Close do produto ou máquina — transmite qualidade</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Vídeo do processo (15-30 seg)</div><div class="check-dica">A transformação acontecendo — ouro para Reels</div></div></div>
+    </div>
+    <div class="checklist-grupo">
+      <div class="checklist-grupo-titulo">✨ Entrega</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Foto frontal mesmo ângulo — carro limpo</div><div class="check-dica">Exato mesmo ângulo da chegada — o contraste é o conteúdo</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Foto lateral completa — limpo</div><div class="check-dica">Mesmo posicionamento para comparação perfeita</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Close do mesmo ponto crítico — limpo</div><div class="check-dica">Antes/depois de detalhe impressiona mais que texto</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Foto de detalhe extra — reflexo, brilho</div><div class="check-dica">Rodas, pintura brilhando, vidro cristalino</div></div></div>
+    </div>
+    <div class="checklist-grupo">
+      <div class="checklist-grupo-titulo">🤝 Cliente (opcional)</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Reação do cliente na entrega</div><div class="check-dica">Com permissão — reação autêntica é o melhor conteúdo</div></div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-nome">Cliente com o carro (foto ou vídeo)</div><div class="check-dica">Prova social real — pede autorização antes</div></div></div>
+    </div>
+    <button class="btn-reset" onclick="resetChecklist()">↺ Reiniciar checklist</button>
+  </div>
+</div>
+
+<!-- ESTÚDIO -->
+<div id="aba-estudio" class="secao">
+  <div class="card">
+    <div class="card-titulo">Tipo de conteúdo</div>
+    <div class="card-desc">O que você quer gerar hoje?</div>
+    <div class="tipo-grid">
+      <div class="tipo-btn ativo" onclick="selTipo('carrossel',this)"><span class="ti">🎠</span><div class="tnome">Carrossel</div></div>
+      <div class="tipo-btn" onclick="selTipo('story',this)"><span class="ti">📱</span><div class="tnome">Story</div></div>
+      <div class="tipo-btn" onclick="selTipo('flyer',this)"><span class="ti">📄</span><div class="tnome">Flyer/Promo</div></div>
+      <div class="tipo-btn" onclick="selTipo('educativo',this)"><span class="ti">🎓</span><div class="tnome">Educativo</div></div>
+      <div class="tipo-btn" onclick="selTipo('bastidor',this)"><span class="ti">🎬</span><div class="tnome">Bastidor</div></div>
+      <div class="tipo-btn" onclick="selTipo('inspiracional',this)"><span class="ti">🔥</span><div class="tnome">Inspiracional</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-titulo">Fotos do atendimento</div>
+    <div class="card-desc">Envie as fotos antes/depois capturadas no checklist.</div>
+    <div class="upload-area" id="upload-area">
+      <input type="file" id="input-fotos" accept="image/*" multiple onchange="handleFotos(this.files)">
+      <div style="font-size:28px;margin-bottom:8px">📸</div>
+      <div style="font-size:14px;color:#555;font-weight:500">Toque para selecionar fotos</div>
+      <div style="font-size:12px;color:#999;margin-top:4px">Antes e depois, processo, detalhes</div>
+    </div>
+    <div id="prev-grid" class="prev-grid" style="display:none"></div>
+  </div>
+  <div class="card">
+    <div class="card-titulo">Contexto do atendimento</div>
+    <div class="campo-grupo">
+      <label class="campo-label">Serviço realizado</label>
+      <select class="campo-select" id="servico-sel">
+        <option value="">Selecione o serviço...</option>
+        <option value="lavagem_start">Lavagem Start (Essencial)</option>
+        <option value="lavagem_perf">Lavagem Performance (Equilíbrio e Brilho)</option>
+        <option value="lavagem_resgate">Lavagem Resgate (Detalhamento de Elite)</option>
+        <option value="interior">Limpeza de Interior</option>
+        <option value="higienizacao">Higienização Completa</option>
+        <option value="farol_rev">Revitalização de Faróis</option>
+        <option value="farol_clar">Clarificação de Faróis</option>
+        <option value="polimento">Polimento Profissional</option>
+        <option value="motor">Limpeza de Motor</option>
+        <option value="descontam">Descontaminação</option>
+      </select>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-label">Tipo de veículo</label>
+      <select class="campo-select" id="veiculo-sel">
+        <option value="">Selecione...</option>
+        <option value="hatch">Hatch</option>
+        <option value="sedan">Sedan</option>
+        <option value="suv">SUV</option>
+        <option value="pickup">Pickup</option>
+        <option value="van">Van/Utilitário</option>
+      </select>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-label">Observações (opcional)</label>
+      <textarea class="campo-textarea" id="obs-txt" placeholder="Ex: Gol todo sujo de lama, cliente ficou impressionado, farol muito opaco..."></textarea>
+    </div>
+    <div class="campo-grupo">
+      <label class="campo-label">CTA especial (opcional)</label>
+      <input type="text" class="campo-input" id="cta-txt" placeholder="Ex: agenda aberta sábado, combo com desconto...">
+    </div>
+    <button class="btn-gerar" id="btn-gerar" onclick="gerarConteudo()">✦ Gerar conteúdo com IA</button>
+  </div>
+  <div id="resultado-area"></div>
+</div>
+
+<!-- ESTRATÉGIA -->
+<div id="aba-estrategia" class="secao">
+  <div id="alerta-metricas" class="alerta-banner" style="display:none">
+    <div class="al-icon">📊</div>
+    <div class="al-info">
+      <div class="al-titulo">Hora de atualizar suas métricas!</div>
+      <div class="al-desc" id="alerta-desc">Última análise há mais de 3 dias</div>
+    </div>
+    <button class="al-btn" onclick="document.getElementById('alerta-metricas').style.display='none'">Atualizar</button>
+  </div>
+  <div class="card">
+    <div class="card-titulo">Análise estratégica</div>
+    <div class="card-desc">Preencha as métricas do seu Instagram — a IA gera análise com recomendações reais para o @box0.0_</div>
+    <div class="estr-modo-grid">
+      <div class="estr-modo-btn ativo" onclick="selModo('post',this)"><span class="em-icon">📸</span><div class="em-nome">Por post</div><div class="em-desc">Analisa post ou reel específico</div></div>
+      <div class="estr-modo-btn" onclick="selModo('semana',this)"><span class="em-icon">📅</span><div class="em-nome">Por semana</div><div class="em-desc">Métricas agregadas da semana</div></div>
+      <div class="estr-modo-btn" onclick="selModo('periodo',this)"><span class="em-icon">📈</span><div class="em-nome">Por período</div><div class="em-desc">Compara múltiplos posts</div></div>
+    </div>
+  </div>
+
+  <div id="modo-post" class="modo-estr">
+    <div class="card">
+      <div class="card-titulo">Dados do post</div>
+      <div class="campo-grupo"><label class="campo-label">Tipo de conteúdo</label>
+        <select class="campo-select" id="post-tipo">
+          <option value="">Selecione...</option>
+          <option>Reel — Antes/Depois</option><option>Reel — Processo/Bastidor</option>
+          <option>Carrossel — Educativo</option><option>Carrossel — Antes/Depois</option>
+          <option>Foto única — Resultado</option><option>Story — Oferta</option>
+          <option>Post — Inspiracional</option>
+        </select>
+      </div>
+      <div class="campo-grupo"><label class="campo-label">Data da publicação</label><input type="date" class="campo-input" id="post-data"></div>
+      <div class="campo-grupo"><label class="campo-label">Descrição em 1 linha (opcional)</label><input type="text" class="campo-input" id="post-desc" placeholder="Ex: resgate do Gol branco, antes/depois do interior"></div>
+    </div>
+    <div class="card">
+      <div class="card-titulo">Métricas</div>
+      <div class="card-desc">Instagram → post → 3 pontinhos → Ver insights</div>
+      <div class="metrica-grid">
+        <div class="metrica-item"><div class="metrica-label"><span>👁</span>Alcance</div><input class="metrica-input" type="number" id="p-alcance" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>📊</span>Impressões</div><input class="metrica-input" type="number" id="p-impressoes" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>❤️</span>Curtidas</div><input class="metrica-input" type="number" id="p-curtidas" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>💬</span>Comentários</div><input class="metrica-input" type="number" id="p-coments" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>🔖</span>Salvamentos</div><input class="metrica-input" type="number" id="p-saves" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>↗️</span>Compartilhamentos</div><input class="metrica-input" type="number" id="p-shares" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>👤</span>Visitas ao perfil</div><input class="metrica-input" type="number" id="p-visitas" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>➕</span>Novos seguidores</div><input class="metrica-input" type="number" id="p-segs" placeholder="0"></div>
+      </div>
+      <div id="reels-extra" style="display:none">
+        <hr class="divider">
+        <div class="card-titulo" style="margin-bottom:12px">Extras de Reel</div>
+        <div class="metrica-grid">
+          <div class="metrica-item"><div class="metrica-label"><span>▶️</span>Reproduções</div><input class="metrica-input" type="number" id="p-repro" placeholder="0"></div>
+          <div class="metrica-item"><div class="metrica-label"><span>⏱</span>Tempo médio (seg)</div><input class="metrica-input" type="number" id="p-tempo" placeholder="0"></div>
+        </div>
+      </div>
+      <button class="btn-gerar" onclick="analisarEstrategia('post')" id="btn-analisar-post">✦ Analisar este post com IA</button>
+    </div>
+  </div>
+
+  <div id="modo-semana" class="modo-estr" style="display:none">
+    <div class="card">
+      <div class="card-titulo">Período</div>
+      <div class="periodo-grid">
+        <div class="campo-grupo" style="margin:0"><label class="campo-label">De</label><input type="date" class="campo-input" id="sem-de"></div>
+        <div class="campo-grupo" style="margin:0"><label class="campo-label">Até</label><input type="date" class="campo-input" id="sem-ate"></div>
+      </div>
+      <div class="campo-grupo"><label class="campo-label">Posts publicados</label><input type="number" class="campo-input" id="sem-posts" placeholder="Ex: 5" min="0"></div>
+    </div>
+    <div class="card">
+      <div class="card-titulo">Métricas da semana</div>
+      <div class="card-desc">Instagram → Insights da conta → selecione o período</div>
+      <div class="metrica-grid">
+        <div class="metrica-item"><div class="metrica-label"><span>👁</span>Alcance total</div><input class="metrica-input" type="number" id="s-alcance" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>📊</span>Impressões totais</div><input class="metrica-input" type="number" id="s-impressoes" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>➕</span>Seguidores ganhos</div><input class="metrica-input" type="number" id="s-ganhos" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>➖</span>Seguidores perdidos</div><input class="metrica-input" type="number" id="s-perdidos" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>👤</span>Visitas ao perfil</div><input class="metrica-input" type="number" id="s-visitas" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>🔗</span>Cliques no link</div><input class="metrica-input" type="number" id="s-cliques" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>❤️</span>Total curtidas</div><input class="metrica-input" type="number" id="s-curtidas" placeholder="0"></div>
+        <div class="metrica-item"><div class="metrica-label"><span>🔖</span>Total salvamentos</div><input class="metrica-input" type="number" id="s-saves" placeholder="0"></div>
+      </div>
+      <div class="campo-grupo"><label class="campo-label">Melhor horário da semana</label><input type="text" class="campo-input" id="s-horario" placeholder="Ex: Terça 19h"></div>
+      <div class="campo-grupo"><label class="campo-label">Observações</label><textarea class="campo-textarea" id="s-obs" placeholder="O que se destacou, o que não performou..."></textarea></div>
+      <button class="btn-gerar" onclick="analisarEstrategia('semana')" id="btn-analisar-sem">✦ Analisar semana com IA</button>
+    </div>
+  </div>
+
+  <div id="modo-periodo" class="modo-estr" style="display:none">
+    <div class="card">
+      <div class="card-titulo">Comparar múltiplos posts</div>
+      <div class="card-desc">Adicione até 5 posts para identificar padrões de performance.</div>
+      <div id="posts-lista"></div>
+      <button class="btn-sec" onclick="adicionarPost()" id="btn-add-post" style="width:100%;margin-bottom:1rem">+ Adicionar post</button>
+      <button class="btn-gerar" onclick="analisarEstrategia('periodo')" id="btn-analisar-per">✦ Comparar e gerar estratégia</button>
+    </div>
+  </div>
+
+  <div id="estr-resultado"></div>
+</div>
+
+<!-- CALENDÁRIO -->
+<div id="aba-calendario" class="secao">
+  <div class="card">
+    <div class="card-titulo">Calendário editorial</div>
+    <div class="card-desc">Você grava sábado e domingo. Abaixo o ritmo de postagem diária recomendado.</div>
+  </div>
+  <div class="card"><div id="semana-grid" class="semana-grid"></div></div>
+  <div class="card">
+    <div class="card-titulo">Pautas da semana</div>
+    <div class="card-desc">Mix estratégico baseado nos pilares de conteúdo do BOX 0.0.</div>
+    <div>
+      <div class="insight-card"><div class="insight-icon">📸</div><div class="insight-info"><div class="insight-titulo">Segunda — Antes/Depois</div><div class="insight-desc">Carrossel do melhor resgate ou lavagem do fim de semana. Gancho: "Olha o que a gente fez nesse carro..."</div></div></div>
+      <div class="insight-card"><div class="insight-icon">🎓</div><div class="insight-info"><div class="insight-titulo">Terça — Educativo</div><div class="insight-desc">Por que a Lavagem Resgate é diferente da lavagem simples? Educa e valoriza o serviço premium.</div></div></div>
+      <div class="insight-card"><div class="insight-icon">🎬</div><div class="insight-info"><div class="insight-titulo">Quarta — Bastidor</div><div class="insight-desc">Vídeo do processo. Mostra os produtos, as técnicas, o capricho. "Não é lavagem. É transformação."</div></div></div>
+      <div class="insight-card"><div class="insight-icon">🔥</div><div class="insight-info"><div class="insight-titulo">Quinta — Inspiracional</div><div class="insight-desc">Post pessoal ou motivacional. Conexão com o seguidor além do serviço. Fé, superação, propósito.</div></div></div>
+      <div class="insight-card"><div class="insight-icon">🎯</div><div class="insight-info"><div class="insight-titulo">Sexta — Oferta / Agenda</div><div class="insight-desc">"Vagas limitadas para sábado — manda QUERO no direct." CTA direto com preço ou combo.</div></div></div>
+      <div class="insight-card"><div class="insight-icon">✨</div><div class="insight-info"><div class="insight-titulo">Sábado — Resultado ao vivo</div><div class="insight-desc">Story do processo acontecendo agora. Cria urgência e prova social em tempo real.</div></div></div>
+      <div class="insight-card"><div class="insight-icon">🏆</div><div class="insight-info"><div class="insight-titulo">Domingo — Destaque</div><div class="insight-desc">O trabalho mais impactante do fim de semana. Foto ou carrossel do resultado que mais impressionou.</div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-titulo">Horários recomendados</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+      <div style="background:#f5f5f0;border-radius:8px;padding:12px"><div style="font-size:11px;color:#999;text-transform:uppercase;font-weight:600;letter-spacing:.5px;margin-bottom:4px">Seg a Sex</div><div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif">18h – 20h</div></div>
+      <div style="background:#f5f5f0;border-radius:8px;padding:12px"><div style="font-size:11px;color:#999;text-transform:uppercase;font-weight:600;letter-spacing:.5px;margin-bottom:4px">Sáb e Dom</div><div style="font-size:20px;font-weight:700;font-family:'Syne',sans-serif">9h – 11h</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- INTELIGÊNCIA -->
+<div id="aba-inteligencia" class="secao">
+  <div class="card">
+    <div class="card-titulo">Inteligência de mercado</div>
+    <div class="card-desc">Dados reais do YouTube e Google + análise IA para pautas baseadas no que está funcionando agora.</div>
+    <div class="intel-tabs">
+      <button class="intel-tab ativo" onclick="selIntelTab('youtube',this)">▶ YouTube</button>
+      <button class="intel-tab" onclick="selIntelTab('search',this)">🔍 Google</button>
+      <button class="intel-tab" onclick="selIntelTab('gemini',this)">✦ Análise IA</button>
+    </div>
+    <button class="btn-gerar" id="btn-intel" onclick="executarIntel()">Buscar dados do nicho agora</button>
+  </div>
+  <div id="intel-resultado">
+    <div class="empty-state"><div class="empty-icon">📊</div><div class="empty-titulo">Nenhuma análise ainda</div><div class="empty-desc">Clique em "Buscar dados" para ver o que está funcionando no nicho de estética automotiva agora.</div></div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL CONFIG -->
+<div class="modal-overlay" id="modal-config">
+  <div class="modal">
+    <div class="modal-titulo">⚙ Configurações</div>
+    <div class="cfg-field">
+      <label class="cfg-lbl">Gemini API Key <span class="cfg-st vazio" id="st-gemini">Não configurada</span></label>
+      <div class="cfg-desc">Principal — copy, legendas, análise de fotos, estratégia.</div>
+      <div class="api-wrap"><input type="password" id="cfg-gemini" placeholder="AIzaSy..."><button class="api-toggle" onclick="toggleVis('cfg-gemini',this)">👁</button></div>
+      <div class="cfg-uses"><span class="cfg-use-tag">Estúdio</span><span class="cfg-use-tag">Estratégia</span><span class="cfg-use-tag">Inteligência</span></div>
+      <a class="cfg-link" href="https://aistudio.google.com/app/apikey" target="_blank">→ aistudio.google.com/app/apikey</a>
+    </div>
+    <div class="cfg-field">
+      <label class="cfg-lbl">Groq API Key <span class="cfg-st vazio" id="st-groq">Não configurada</span></label>
+      <div class="cfg-desc">Backup automático — entra quando Gemini falhar. Gratuito.</div>
+      <div class="api-wrap"><input type="password" id="cfg-groq" placeholder="gsk_..."><button class="api-toggle" onclick="toggleVis('cfg-groq',this)">👁</button></div>
+      <div class="cfg-uses"><span class="cfg-use-tag">Backup automático</span></div>
+      <a class="cfg-link" href="https://console.groq.com/keys" target="_blank">→ console.groq.com/keys</a>
+    </div>
+    <div class="cfg-field">
+      <label class="cfg-lbl">Google Cloud API Key <span class="cfg-st vazio" id="st-google">Não configurada</span></label>
+      <div class="cfg-desc">YouTube trends + Custom Search + Search Console.</div>
+      <div class="api-wrap"><input type="password" id="cfg-google" placeholder="AIzaSy..."><button class="api-toggle" onclick="toggleVis('cfg-google',this)">👁</button></div>
+      <div class="cfg-uses"><span class="cfg-use-tag">YouTube</span><span class="cfg-use-tag">Pesquisa Google</span></div>
+      <a class="cfg-link" href="https://console.cloud.google.com" target="_blank">→ console.cloud.google.com</a>
+    </div>
+    <div class="cfg-field">
+      <label class="cfg-lbl">Search Engine ID (CX) <span class="cfg-st ok">Configurado</span></label>
+      <div class="cfg-desc">Já configurado com seu mecanismo BOX MKT.</div>
+      <input type="text" class="campo-input" id="cfg-cx" value="93deaf3f6ec6f4c49">
+    </div>
+    <div class="modal-sec">
+      <div class="modal-sec-titulo">Identidade do negócio</div>
+      <div class="cfg-field"><label class="cfg-lbl">Instagram @</label><input type="text" class="campo-input" id="cfg-instagram" value="@box0.0_"></div>
+      <div class="cfg-field"><label class="cfg-lbl">Cidade / Bairro</label><input type="text" class="campo-input" id="cfg-cidade" value="Vila Natal, Zona Sul — São Paulo (Grajaú/Parelheiros)"></div>
+      <div class="cfg-field"><label class="cfg-lbl">Diferencial</label><textarea class="campo-textarea" id="cfg-dif" style="min-height:60px">Produtos top de linha, processos profissionais. Não é lavagem, é transformação. Resultado ou nada.</textarea></div>
+    </div>
+    <div class="modal-sec">
+      <div class="modal-sec-titulo">Alertas</div>
+      <div class="cfg-field"><label class="cfg-lbl">Lembrar de atualizar métricas a cada</label>
+        <select class="campo-select" id="cfg-alerta"><option value="2">2 dias</option><option value="3" selected>3 dias</option><option value="5">5 dias</option><option value="7">7 dias</option></select>
+      </div>
+    </div>
+    <div style="background:#f5f5f0;border-radius:8px;padding:10px 14px;font-size:12px;color:#999;line-height:1.6;margin-top:1rem">
+      🔒 Chaves salvas apenas no seu dispositivo — nunca enviadas para servidores externos além das APIs contratadas.
+    </div>
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn-save" onclick="salvarConfig()" style="flex:1">Salvar</button>
+      <button class="btn-reset" onclick="fecharConfig()" style="width:80px;margin-top:0">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CX_DEFAULT = '93deaf3f6ec6f4c49';
+
+// ============================================================
+// SYSTEM PROMPT — identidade completa do BOX 0.0
+// ============================================================
+const BRAND_IDENTITY = `
+IDENTIDADE VISUAL BOX 0.0:
+- Logo: circular, fundo preto, carro esportivo em verde neon + branco, texto BOX 0.0 em branco/verde, "Estética Automotiva" e "Padrão de Qualidade" em dourado/verde
+- Cores: preto (#000), verde neon (#c8ff00 / #8dc63f), branco
+- Slogans fixos: "Não é lavagem. É transformação." | "Resultado ou Nada." | "Não é pra qualquer carro. É pra quem aprecia o melhor." | "Padrão de Qualidade" | "O padrão é alto. O resultado é real."
+- Estilo visual: bold, impactante, premium, escuro
+
+TABELA DE PREÇOS BOX 0.0:
+Lavagem Start: Hatch R$60 | Sedan R$70 | SUV R$80
+Lavagem Performance: Hatch R$110 | Sedan R$120 | SUV R$140
+Lavagem Resgate (Elite): Hatch R$220 | Sedan R$230 | SUV R$260
+Limpeza de Interior: Hatch R$90 | Sedan R$100 | SUV R$130
+Higienização Completa: Hatch R$200 | Sedan R$240 | SUV R$260
+Revitalização de Faróis: R$150 (todos)
+Clarificação de Faróis: R$70 (todos)
+Polimento Profissional: Hatch R$420 | Sedan R$480 | SUV R$520
+Limpeza de Motor: Hatch/Sedan R$100 | SUV R$120
+Descontaminação: Hatch R$100 | Sedan R$110 | SUV R$130
+Enceramento: Hatch R$30 | Sedan R$35 | SUV R$40
+Plásticos Externos: Hatch R$30 | Sedan R$35 | SUV R$50
+Revitalização de Couro: Hatch R$60 | Sedan R$70 | SUV R$100
+
+SERVIÇOS — DESCRIÇÕES TÉCNICAS:
+- Lavagem Start: aspiração e limpeza do interior, lavagem externa com pH neutro, secagem técnica anti-riscos, pretinho premium, preserva o brilho com segurança. O essencial seguro.
+- Lavagem Performance: tudo da Start + limpeza química de rodas e caixas, proteção UV dos plásticos internos. O equilíbrio e brilho.
+- Lavagem Resgate: detalhamento de elite — tudo da Performance + detalhamento cirúrgico de emblemas e frisos, proteção dos plásticos externos, cera com alta repelência.
+- Higienização Completa: higienização a vapor com extratora, limpeza profunda de tecido/couro/plásticos, elimina 99% de ácaros, fungos e bactérias. Saúde, conforto e proteção.
+- Polimento: remove micro riscos e imperfeições, devolve brilho e profundidade da cor, acabamento espelhado, aspecto zero km. Correção • Brilho • Proteção.
+- Revitalização de Faróis: mais luz, mais segurança. Recupera brilho e transparência, design renovado, serviço rápido.
+`;
+
+const SYSTEM_PROMPT = `Você é especialista em marketing digital para estética automotiva premium.
+
+NEGÓCIO: BOX 0.0 — Estética Automotiva
+INSTAGRAM: @box0.0_
+LOCAL: Vila Natal, Zona Sul de São Paulo (Grajaú e Parelheiros)
+DIFERENCIAL: Produtos top de linha, processos profissionais. Não é lavagem, é transformação.
+PÚBLICO: Donos de carro na Zona Sul de SP que valorizam qualidade e resultado — não buscam o mais barato, buscam o melhor.
+ATENDIMENTO: Apenas sábados e domingos, horário agendado, vagas limitadas.
+
+${BRAND_IDENTITY}
+
+TOM DE VOZ — USE EXATAMENTE ESSES ESTILOS:
+
+1. TOM DESCONTRAÍDO (trabalho, bastidor, oferta):
+Exemplo real: "Olha o resgate que foi feito nesse Gol! Aqui no @box0.0_ eu prezo pela experiência que você vai ter quando eu entregar o seu carro! Limpeza total, desde os pedais até o banco."
+Estilo: direto, primeira pessoa, orgulho do trabalho, resultado concreto.
+
+2. TOM EDUCATIVO (explica serviço, tira dúvida):
+Exemplo real: "Aqui no @box0.0_ também tem lavagem simples! Simples não significa ruim e sim manutenção da limpeza!"
+Estilo: quebra expectativa, explica de forma simples, sem ser chato.
+
+3. TOM DE OFERTA (CTA direto, preço, agenda):
+Exemplo real: "Veja o que o @box0.0_ te proporciona! 🔥 Combo Lavagem Completa + Limpeza Interna → Apenas R$150 📍 Atendo apenas aos sábados e domingos na Vila Natal - SP. Vagas limitadas! Manda QUERO no direct."
+Estilo: empolgado, preço explícito, localização, urgência real.
+
+4. TOM INSPIRACIONAL (fé, superação, propósito):
+Exemplo real: "Continue lutando! Desistir ou parar não é uma opção!" / "O primeiro passo para avançar é AGRADECER! Volta na sua memória e lembra de uma situação que parecia sem solução e você venceu!"
+Estilo: pessoal, emocional, fé presente, curto e direto.
+
+REGRAS ABSOLUTAS:
+1. Legenda SEMPRE começa com "@box0.0_ |" seguido do gancho
+2. Emojis estratégicos — no máximo 3 a 4 por legenda, posicionados onde geram impacto
+3. SEMPRE mencionar: Vila Natal, Zona Sul, SP ou "na sua casa"
+4. CTA sempre presente: "chama no direct", "manda QUERO", "agenda já", "garante seu horário"
+5. "Vagas limitadas" quando relevante — cria urgência real pois é verdade
+6. Quando mencionar preço: sempre o preço real da tabela acima
+7. Nunca inventar serviços que não existem na tabela
+
+HASHTAGS — ESTRUTURA OBRIGATÓRIA:
+Use exatamente esse mix por tipo de post:
+
+GRANDES (3 obrigatórias — alto volume):
+#esteticaautomotiva #cardetailing #detailing
+
+MÉDIAS (2 obrigatórias — nicho específico):
+Escolha 2 das: #polimentoautomotivo #lavagemautomotiva #higienizacaoautomotiva #detalhamentoautomotivo #cardetail #detailer #carwash #cristalizacao #vonixx #lavajato
+
+LOCAIS (3 obrigatórias — SEO geográfico):
+Escolha 3 das: #ZonaSulSP #EsteticaAutomotivaSP #GrajaU #InterlagosSP #SantoAmaroSP #SocorroSP #CidadeDutra #ZonaSulSaoPaulo
+
+TOTAL: 8 hashtags por post (limite seguro para celular)
+Formato: todas em sequência no final da legenda, sem vírgula, separadas por espaço.`;
+
+// ============================================================
+// SERVIÇOS — mapeamento para prompts
+// ============================================================
+const SERVICOS = {
+  lavagem_start: { nome: 'Lavagem Start', preco: { hatch: 60, sedan: 70, suv: 80 }, desc: 'O essencial seguro — aspiração, lavagem pH neutro, secagem técnica, pretinho premium' },
+  lavagem_perf: { nome: 'Lavagem Performance', preco: { hatch: 110, sedan: 120, suv: 140 }, desc: 'O equilíbrio e brilho — tudo da Start + limpeza química de rodas + proteção UV' },
+  lavagem_resgate: { nome: 'Lavagem Resgate', preco: { hatch: 220, sedan: 230, suv: 260 }, desc: 'O detalhamento de elite — tudo da Performance + detalhamento cirúrgico + cera de alta repelência' },
+  interior: { nome: 'Limpeza de Interior', preco: { hatch: 90, sedan: 100, suv: 130 }, desc: 'Remoção técnica de manchas, limpeza de portas e painéis, aspiração profunda, eliminação de odores' },
+  higienizacao: { nome: 'Higienização Completa', preco: { hatch: 200, sedan: 240, suv: 260 }, desc: 'Higienização a vapor com extratora, elimina 99% de ácaros, fungos e bactérias' },
+  farol_rev: { nome: 'Revitalização de Faróis', preco: { hatch: 150, sedan: 150, suv: 150 }, desc: 'Mais luz, mais segurança — recupera brilho e transparência total dos faróis' },
+  farol_clar: { nome: 'Clarificação de Faróis', preco: { hatch: 70, sedan: 70, suv: 70 }, desc: 'Limpeza e recuperação básica dos faróis' },
+  polimento: { nome: 'Polimento Profissional', preco: { hatch: 420, sedan: 480, suv: 520 }, desc: 'Remove micro riscos, devolve brilho e profundidade, acabamento espelhado, aspecto zero km' },
+  motor: { nome: 'Limpeza de Motor', preco: { hatch: 100, sedan: 100, suv: 120 }, desc: 'Limpeza completa do compartimento do motor' },
+  descontam: { nome: 'Descontaminação', preco: { hatch: 100, sedan: 110, suv: 130 }, desc: 'Remoção de contaminantes da pintura' }
+};
+
+let cfg = {};
+let tipoSel = 'carrossel';
+let intelTab = 'youtube';
+let modoEstr = 'post';
+let fotosUpload = [];
+let resultadoAtual = '';
+let postsCount = 0;
+
+function carregarConfig() {
+  try {
+    cfg = JSON.parse(localStorage.getItem('boxmkt_cfg_v4') || '{}');
+    if (cfg.gemini) { document.getElementById('cfg-gemini').value = cfg.gemini; atSt('st-gemini', true); }
+    if (cfg.groq) { document.getElementById('cfg-groq').value = cfg.groq; atSt('st-groq', true); }
+    if (cfg.google) { document.getElementById('cfg-google').value = cfg.google; atSt('st-google', true); }
+    if (cfg.cx) document.getElementById('cfg-cx').value = cfg.cx;
+    if (cfg.instagram) document.getElementById('cfg-instagram').value = cfg.instagram;
+    if (cfg.cidade) document.getElementById('cfg-cidade').value = cfg.cidade;
+    if (cfg.dif) document.getElementById('cfg-dif').value = cfg.dif;
+    if (cfg.alerta) document.getElementById('cfg-alerta').value = cfg.alerta;
+    verificarAlerta();
+  } catch(e) {}
+}
+
+function atSt(id, ok) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'cfg-st ' + (ok ? 'ok' : 'vazio');
+  el.textContent = ok ? 'Configurada ✓' : 'Não configurada';
+}
+
+function salvarConfig() {
+  cfg = {
+    gemini: document.getElementById('cfg-gemini').value.trim(),
+    groq: document.getElementById('cfg-groq').value.trim(),
+    google: document.getElementById('cfg-google').value.trim(),
+    cx: document.getElementById('cfg-cx').value.trim() || CX_DEFAULT,
+    instagram: document.getElementById('cfg-instagram').value.trim(),
+    cidade: document.getElementById('cfg-cidade').value.trim(),
+    dif: document.getElementById('cfg-dif').value.trim(),
+    alerta: document.getElementById('cfg-alerta').value
+  };
+  localStorage.setItem('boxmkt_cfg_v4', JSON.stringify(cfg));
+  atSt('st-gemini', !!cfg.gemini);
+  atSt('st-groq', !!cfg.groq);
+  atSt('st-google', !!cfg.google);
+  fecharConfig();
+  mostrarToast('✓ Configurações salvas');
+}
+
+function getSP() {
+  let sp = SYSTEM_PROMPT;
+  if (cfg.instagram && cfg.instagram !== '@box0.0_') sp = sp.replace(/@box0\.0_/g, cfg.instagram);
+  if (cfg.cidade) sp = sp.replace('Vila Natal, Zona Sul de São Paulo (Grajaú e Parelheiros)', cfg.cidade);
+  if (cfg.dif) sp = sp.replace('Produtos top de linha, processos profissionais. Não é lavagem, é transformação.', cfg.dif);
+  return sp;
+}
+
+// ============================================================
+// CHAMADAS DE API
+// ============================================================
+async function chamarIA(prompt, imagens = [], sistemaCustom = null) {
+  if (cfg.gemini) {
+    try { return await chamarGemini(prompt, imagens, sistemaCustom); }
+    catch(e) {
+      if (cfg.groq) { console.log('Gemini falhou → usando Groq:', e.message); return await chamarGroq(prompt, sistemaCustom); }
+      throw e;
+    }
+  } else if (cfg.groq) {
+    return await chamarGroq(prompt, sistemaCustom);
+  }
+  throw new Error('Configure pelo menos uma API (Gemini ou Groq) nas configurações.');
+}
+
+async function chamarGemini(prompt, imagens = [], sistemaCustom = null) {
+  const parts = [];
+  for (const img of imagens.slice(0, 4)) {
+    const b64 = await imgB64(img);
+    parts.push({ inline_data: { mime_type: img.type || 'image/jpeg', data: b64 } });
+  }
+  parts.push({ text: prompt });
+  const body = {
+    system_instruction: { parts: [{ text: sistemaCustom || getSP() }] },
+    contents: [{ role: 'user', parts }],
+    generationConfig: { temperature: 0.85, maxOutputTokens: 2048 }
+  };
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${cfg.gemini}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+  });
+  if (!resp.ok) { const e = await resp.json(); throw new Error(e.error?.message || 'Erro Gemini API'); }
+  const data = await resp.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+async function chamarGroq(prompt, sistemaCustom = null) {
+  const body = {
+    model: 'llama-3.3-70b-versatile',
+    messages: [
+      { role: 'system', content: sistemaCustom || getSP() },
+      { role: 'user', content: prompt }
+    ],
+    max_tokens: 2048, temperature: 0.85
+  };
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cfg.groq}` },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) { const e = await resp.json(); throw new Error(e.error?.message || 'Erro Groq API'); }
+  const data = await resp.json();
+  return data.choices?.[0]?.message?.content || '';
+}
+
+async function buscarYT(q) {
+  if (!cfg.google) throw new Error('Google Cloud API Key não configurada');
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(q)}&type=video&order=viewCount&relevanceLanguage=pt&regionCode=BR&maxResults=5&key=${cfg.google}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Erro YouTube Data API — verifique sua Google Cloud Key');
+  return (await r.json()).items || [];
+}
+
+async function buscarGSearch(q) {
+  if (!cfg.google) throw new Error('Google Cloud API Key não configurada');
+  const cx = cfg.cx || CX_DEFAULT;
+  const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(q)}&cx=${cx}&num=5&hl=pt&gl=br&key=${cfg.google}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Erro Custom Search API — verifique sua Google Cloud Key');
+  return (await r.json()).items || [];
+}
+
+async function imgB64(file) {
+  return new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result.split(',')[1]); r.readAsDataURL(file); });
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function mudarAba(nome, el) {
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+  document.getElementById('aba-' + nome).classList.add('ativa');
+  el.classList.add('ativo');
+  if (nome === 'calendario') renderCalendario();
+  if (nome === 'estrategia') verificarAlerta();
+}
+
+function toggleCheck(el) { el.classList.toggle('marcado'); atualProg(); }
+function atualProg() {
+  const total = document.querySelectorAll('.check-item').length;
+  const marc = document.querySelectorAll('.check-item.marcado').length;
+  const pct = Math.round(marc / total * 100);
+  document.getElementById('check-prog').style.width = pct + '%';
+  document.getElementById('check-label').textContent = `${marc} de ${total} itens`;
+  document.getElementById('check-pct').textContent = `${pct}%`;
+}
+function resetChecklist() { document.querySelectorAll('.check-item').forEach(i => i.classList.remove('marcado')); atualProg(); mostrarToast('↺ Reiniciado'); }
+function selTipo(t, el) { tipoSel = t; document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('ativo')); el.classList.add('ativo'); }
+
+function handleFotos(files) {
+  fotosUpload = Array.from(files);
+  const grid = document.getElementById('prev-grid');
+  if (!fotosUpload.length) { grid.style.display = 'none'; return; }
+  grid.style.display = 'grid'; grid.innerHTML = '';
+  fotosUpload.forEach((f, i) => {
+    const url = URL.createObjectURL(f);
+    const div = document.createElement('div');
+    div.className = 'prev-img';
+    div.innerHTML = `<img src="${url}"><button class="rm" onclick="rmFoto(${i})">×</button><span class="bdg">${i===0?'Antes':i===fotosUpload.length-1?'Depois':i+1}</span>`;
+    grid.appendChild(div);
+  });
+}
+
+function rmFoto(i) {
+  fotosUpload.splice(i, 1);
+  if (!fotosUpload.length) document.getElementById('prev-grid').style.display = 'none';
+  else { const dt = new DataTransfer(); fotosUpload.forEach(f => dt.items.add(f)); handleFotos(dt.files); }
+}
+
+// ============================================================
+// ESTÚDIO — geração de conteúdo
+// ============================================================
+async function gerarConteudo() {
+  if (!cfg.gemini && !cfg.groq) { mostrarToast('⚠ Configure uma API nas configurações'); abrirConfig(); return; }
+  const servicoKey = document.getElementById('servico-sel').value;
+  const veiculoKey = document.getElementById('veiculo-sel').value;
+  const obs = document.getElementById('obs-txt').value;
+  const cta = document.getElementById('cta-txt').value;
+  const servico = SERVICOS[servicoKey];
+  const preco = servico && veiculoKey ? servico.preco[veiculoKey] : null;
+  const btn = document.getElementById('btn-gerar');
+  btn.disabled = true; btn.textContent = '⟳ Gerando...';
+  document.getElementById('resultado-area').innerHTML = `<div class="card"><div class="load-wrap"><span class="load-icon">⟳</span><div class="load-txt">Gerando conteúdo...</div><div class="load-sub">${cfg.gemini ? 'Gemini' : 'Groq'} analisando com a identidade do BOX 0.0</div></div></div>`;
+  try {
+    const ctx = [
+      servico && `Serviço: ${servico.nome} — ${servico.desc}`,
+      preco && `Preço cobrado: R$${preco}`,
+      veiculoKey && `Veículo: ${veiculoKey.toUpperCase()}`,
+      obs && `Observações: ${obs}`,
+      cta && `CTA especial: ${cta}`,
+      fotosUpload.length && `${fotosUpload.length} foto(s) do atendimento anexadas (antes/depois e processo)`
+    ].filter(Boolean).join('\n');
+    const texto = await chamarIA(buildPrompt(tipoSel, ctx), fotosUpload);
+    resultadoAtual = texto;
+    renderResultado(texto);
+  } catch(e) {
+    document.getElementById('resultado-area').innerHTML = `<div class="card"><div style="color:#ef4444;font-size:14px;padding:.5rem 0">⚠ ${e.message}</div><div style="font-size:12px;color:#999;margin-top:8px">Verifique suas chaves de API nas configurações.</div></div>`;
+  }
+  btn.disabled = false; btn.textContent = '✦ Gerar conteúdo com IA';
+}
+
+function buildPrompt(tipo, ctx) {
+  const base = `CONTEXTO DO ATENDIMENTO:\n${ctx || 'Crie conteúdo geral sobre estética automotiva para o BOX 0.0.'}\n\n`;
+  const hashtags_instrucao = `\nHASHTAGS OBRIGATÓRIAS (8 total):
+- 3 grandes: #esteticaautomotiva #cardetailing #detailing
+- 2 médias: escolha as mais relevantes para o serviço
+- 3 locais: escolha entre #ZonaSulSP #EsteticaAutomotivaSP #GrajaU #InterlagosSP #SantoAmaroSP
+Coloque todas juntas no final, separadas por espaço.`;
+  const p = {
+    carrossel: base + `Crie um CARROSSEL completo para Instagram no estilo BOX 0.0.
+
+## LEGENDA COMPLETA
+[Começa com "@box0.0_ |" + gancho impactante. 3-5 linhas, CTA claro, localização Vila Natal/Zona Sul, max 4 emojis estratégicos. Use o tom descontraído ou de oferta conforme o contexto.]
+${hashtags_instrucao}
+
+## SLIDES DO CARROSSEL (6 slides)
+**Slide 1 — CAPA (para o scroll)**
+[Texto impactante, máx 8 palavras. Use os slogans da marca se couber.]
+**Slide 2 — O problema ou situação inicial**
+**Slide 3 — O processo / o que foi feito**
+**Slide 4 — O resultado**
+**Slide 5 — Detalhe / prova visual**
+**Slide 6 — CTA direto**
+[Preço se couber, "chama no direct", "manda QUERO", "vagas limitadas"]
+
+## SCORE DE QUALIDADE
+[Nota 0-100 + justificativa em 1 linha]`,
+
+    story: base + `Crie 1 STORY impactante no estilo BOX 0.0.
+
+## STORY
+**Texto principal:** [máx 6 palavras, impacto máximo]
+**Texto secundário:** [complemento, máx 12 palavras]
+**Recursos sugeridos:** [enquete, contagem regressiva, localização, etc.]
+**CTA:** [ação direta]
+
+## LEGENDA (se salvar como post)
+[Curta, direta, com hashtags obrigatórias]
+${hashtags_instrucao}
+
+## SCORE
+[Nota 0-100]`,
+
+    flyer: base + `Crie um FLYER PROMOCIONAL no estilo BOX 0.0 (fundo preto, verde neon, bold).
+
+## COPY DO FLYER
+**Headline:** [impacto máximo, estilo "Não é lavagem. É transformação."]
+**Subheadline:** [complemento direto]
+**Serviço e benefícios:** [3 bullets curtos]
+**Preço:** [valor real da tabela se disponível]
+**CTA:** ["Chama no Direct" ou "Manda QUERO"]
+**Rodapé:** [@box0.0_ | Vila Natal — SP | Atendimento com horário agendado]
+
+## LEGENDA DO POST
+[Legenda para publicar o flyer]
+${hashtags_instrucao}
+
+## SCORE
+[Nota 0-100]`,
+
+    educativo: base + `Crie um POST EDUCATIVO no estilo BOX 0.0 — ensina algo que valoriza o serviço.
+
+## TÍTULO DO CARROSSEL
+[Faz o seguidor salvar. Ex: "Você sabia que a lavagem errada risca o seu carro?"]
+
+## SLIDES (5 slides)
+**Slide 1 — A pergunta ou problema que todos têm**
+**Slide 2 — Por que acontece / o impacto**
+**Slide 3 — A solução correta**
+**Slide 4 — Como o BOX 0.0 resolve isso**
+**Slide 5 — CTA + benefício de chamar o profissional**
+
+## LEGENDA COMPLETA
+[Tom educativo, 3-4 linhas, CTA sutil, localização]
+${hashtags_instrucao}
+
+## SCORE
+[Nota 0-100]`,
+
+    bastidor: base + `Crie um CONTEÚDO DE BASTIDOR no estilo BOX 0.0 — mostra processo e dedicação.
+
+## LEGENDA DO VÍDEO/REEL
+[Tom descontraído, primeira pessoa, orgulho do trabalho. 2-3 linhas. Ex: "Olha o que a gente fez nesse carro hoje..."]
+${hashtags_instrucao}
+
+## TEXTO PARA STORY
+[Copy curto para acompanhar o vídeo em story]
+
+## GANCHO DOS PRIMEIROS 3 SEGUNDOS
+[O que dizer/mostrar nos primeiros 3s para prender a atenção]
+
+## SCORE
+[Nota 0-100]`,
+
+    inspiracional: base + `Crie um POST INSPIRACIONAL no estilo pessoal do BOX 0.0 — fé, propósito, superação.
+
+## LEGENDA
+[Tom pessoal e emocional. Pode mencionar a jornada de empreender. Fé presente. 3-5 linhas. Ex: "Continue lutando! Desistir não é uma opção!" Termine conectando sutilmente com o trabalho.]
+${hashtags_instrucao}
+
+## VARIAÇÃO CURTA (para story ou reel)
+[Versão de 1-2 linhas do mesmo sentimento]
+
+## SCORE
+[Nota 0-100]`
+  };
+  return p[tipo] || p.carrossel;
+}
+
+function renderResultado(texto) {
+  const secs = parseSecs(texto);
+  let html = '<div style="margin-top:1.5rem">';
+  html += `<div class="res-header"><div class="res-titulo">Conteúdo gerado</div><button class="btn-copy" onclick="copiarTudo()">📋 Copiar tudo</button></div>`;
+  secs.forEach(s => {
+    html += `<div class="res-bloco"><div class="res-bloco-titulo">${s.t}</div>`;
+    if (s.t.includes('HASHTAG') || s.t.includes('hashtag')) {
+      const tags = s.c.match(/#\w+/g) || [];
+      const grandes = ['#esteticaautomotiva','#cardetailing','#detailing'];
+      const locais = ['#ZonaSulSP','#EsteticaAutomotivaSP','#GrajaU','#InterlagosSP','#SantoAmaroSP','#SocorroSP','#CidadeDutra','#ZonaSulSaoPaulo'];
+      html += `<div class="htag-wrap">${tags.map(t => {
+        const cls = grandes.includes(t) ? 'grande' : locais.some(l => l.toLowerCase()===t.toLowerCase()) ? 'local' : 'media';
+        return `<span class="htag ${cls}">${t}</span>`;
+      }).join('')}</div>`;
+    } else if (s.t.includes('SCORE')) {
+      const n = parseInt((s.c.match(/(\d{1,3})/) || ['','78'])[1]);
+      const cor = n >= 80 ? '#22c55e' : n >= 65 ? '#f59e0b' : '#ef4444';
+      html += `<div class="score-wrap"><div class="score-num" style="color:${cor}">${n}</div><div class="score-info"><div class="score-lbl">Score de qualidade</div><div class="score-bar-w"><div class="score-bar" style="width:${n}%;background:${cor}"></div></div></div></div>`;
+      html += `<div class="res-texto" style="font-size:13px;color:#666;margin-top:6px">${s.c.replace(/\d+\/?\d*/, '').trim()}</div>`;
+    } else {
+      html += `<div class="res-texto">${s.c}</div>`;
+    }
+    html += `<button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar seção</button></div>`;
+  });
+  html += '</div>';
+  document.getElementById('resultado-area').innerHTML = html;
+}
+
+function parseSecs(texto) {
+  const secs = [];
+  const rx = /##\s+(.+?)\n([\s\S]*?)(?=##|$)/g;
+  let m;
+  while ((m = rx.exec(texto)) !== null) secs.push({ t: m[1].trim(), c: m[2].trim() });
+  if (!secs.length) secs.push({ t: 'CONTEÚDO GERADO', c: texto });
+  return secs;
+}
+
+function copiarTudo() { navigator.clipboard.writeText(resultadoAtual).then(() => mostrarToast('✓ Tudo copiado!')); }
+
+// ============================================================
+// ESTRATÉGIA
+// ============================================================
+function selModo(modo, el) {
+  modoEstr = modo;
+  document.querySelectorAll('.estr-modo-btn').forEach(b => b.classList.remove('ativo'));
+  el.classList.add('ativo');
+  document.querySelectorAll('.modo-estr').forEach(m => m.style.display = 'none');
+  document.getElementById('modo-' + modo).style.display = 'block';
+  document.getElementById('estr-resultado').innerHTML = '';
+}
+
+document.getElementById('post-tipo').addEventListener('change', function() {
+  document.getElementById('reels-extra').style.display = this.value.includes('Reel') ? 'block' : 'none';
+});
+
+function adicionarPost() {
+  if (postsCount >= 5) { mostrarToast('Máximo de 5 posts'); return; }
+  postsCount++;
+  const id = postsCount;
+  const div = document.createElement('div');
+  div.id = `pb-${id}`;
+  div.className = 'card';
+  div.style.marginBottom = '8px';
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Post ${id}</div>
+      <button onclick="document.getElementById('pb-${id}').remove();postsCount--;" style="background:none;border:none;color:#999;cursor:pointer;font-size:18px">×</button>
+    </div>
+    <div class="campo-grupo"><label class="campo-label">Tipo</label>
+      <select class="campo-select" id="pp-tipo-${id}">
+        <option>Reel — Antes/Depois</option><option>Reel — Processo</option>
+        <option>Carrossel — Educativo</option><option>Carrossel — Antes/Depois</option>
+        <option>Foto única</option><option>Post Inspiracional</option>
+      </select>
+    </div>
+    <div class="metrica-grid">
+      <div class="metrica-item"><div class="metrica-label"><span>👁</span>Alcance</div><input class="metrica-input" type="number" id="pp-alc-${id}" placeholder="0"></div>
+      <div class="metrica-item"><div class="metrica-label"><span>❤️</span>Curtidas</div><input class="metrica-input" type="number" id="pp-cur-${id}" placeholder="0"></div>
+      <div class="metrica-item"><div class="metrica-label"><span>🔖</span>Salvamentos</div><input class="metrica-input" type="number" id="pp-sav-${id}" placeholder="0"></div>
+      <div class="metrica-item"><div class="metrica-label"><span>↗️</span>Compartilhamentos</div><input class="metrica-input" type="number" id="pp-sha-${id}" placeholder="0"></div>
+    </div>`;
+  document.getElementById('posts-lista').appendChild(div);
+  if (postsCount >= 5) document.getElementById('btn-add-post').style.display = 'none';
+}
+
+async function analisarEstrategia(modo) {
+  if (!cfg.gemini && !cfg.groq) { mostrarToast('⚠ Configure uma API'); abrirConfig(); return; }
+  const btnIds = { post: 'btn-analisar-post', semana: 'btn-analisar-sem', periodo: 'btn-analisar-per' };
+  const btn = document.getElementById(btnIds[modo]);
+  btn.disabled = true; btn.textContent = '⟳ Analisando...';
+  document.getElementById('estr-resultado').innerHTML = `<div class="card"><div class="load-wrap"><span class="load-icon">⟳</span><div class="load-txt">Analisando métricas...</div><div class="load-sub">Gerando estratégia personalizada para o @box0.0_</div></div></div>`;
+
+  const sistemaEstr = `Você é um estrategista de marketing digital especializado em Instagram para pequenos negócios locais de estética automotiva premium. Negócio: @box0.0_ — Vila Natal, Zona Sul de SP. Seja direto, específico e prático. Use os dados reais para embasar cada recomendação. Cada sugestão deve ser aplicável imediatamente pelo @box0.0_. Nunca dê conselhos genéricos.`;
+
+  try {
+    let prompt = '';
+    if (modo === 'post') {
+      const tipo = document.getElementById('post-tipo').value;
+      const alcance = parseInt(document.getElementById('p-alcance').value) || 0;
+      const impressoes = parseInt(document.getElementById('p-impressoes').value) || 0;
+      const curtidas = parseInt(document.getElementById('p-curtidas').value) || 0;
+      const coments = parseInt(document.getElementById('p-coments').value) || 0;
+      const saves = parseInt(document.getElementById('p-saves').value) || 0;
+      const shares = parseInt(document.getElementById('p-shares').value) || 0;
+      const visitas = parseInt(document.getElementById('p-visitas').value) || 0;
+      const segs = parseInt(document.getElementById('p-segs').value) || 0;
+      const repro = parseInt(document.getElementById('p-repro').value) || 0;
+      const tempo = parseInt(document.getElementById('p-tempo').value) || 0;
+      const taxaEng = alcance > 0 ? ((curtidas+saves+coments+shares)/alcance*100).toFixed(1) : 0;
+      const desc = document.getElementById('post-desc').value;
+      const data = document.getElementById('post-data').value;
+
+      prompt = `Analise as métricas deste post do @box0.0_ (estética automotiva premium, Vila Natal, Zona Sul SP):
+
+TIPO: ${tipo || 'não informado'}
+DATA: ${data || 'não informada'}
+DESCRIÇÃO: ${desc || 'não informada'}
+
+MÉTRICAS:
+Alcance: ${alcance} | Impressões: ${impressoes}
+Curtidas: ${curtidas} | Comentários: ${coments}
+Salvamentos: ${saves} ← MAIS IMPORTANTE para o algoritmo
+Compartilhamentos: ${shares} | Visitas ao perfil: ${visitas}
+Novos seguidores: ${segs}
+Taxa de engajamento calculada: ${taxaEng}%
+${repro > 0 ? `Reproduções (Reel): ${repro} | Tempo médio: ${tempo}s` : ''}
+
+## DIAGNÓSTICO DO POST
+[O que esses números revelam — seja específico com os dados]
+
+## PONTOS FORTES
+[O que funcionou bem]
+
+## PONTOS DE ATENÇÃO
+[O que pode melhorar — baseado nos dados]
+
+## O QUE O ALGORITMO ESTÁ DIZENDO
+[Interpretação técnica do comportamento do algoritmo]
+
+## RECOMENDAÇÕES CONCRETAS
+[3 ações específicas para o próximo post do mesmo tipo]
+
+## PRÓXIMO POST SUGERIDO
+[Sugestão concreta — tipo, gancho, CTA — baseada nessa performance]`;
+
+    } else if (modo === 'semana') {
+      const alcance = parseInt(document.getElementById('s-alcance').value) || 0;
+      const impressoes = parseInt(document.getElementById('s-impressoes').value) || 0;
+      const ganhos = parseInt(document.getElementById('s-ganhos').value) || 0;
+      const perdidos = parseInt(document.getElementById('s-perdidos').value) || 0;
+      const visitas = parseInt(document.getElementById('s-visitas').value) || 0;
+      const cliques = parseInt(document.getElementById('s-cliques').value) || 0;
+      const curtidas = parseInt(document.getElementById('s-curtidas').value) || 0;
+      const saves = parseInt(document.getElementById('s-saves').value) || 0;
+      const posts = document.getElementById('sem-posts').value || 0;
+      const horario = document.getElementById('s-horario').value;
+      const obs = document.getElementById('s-obs').value;
+      const saldo = ganhos - perdidos;
+
+      prompt = `Analise as métricas semanais do @box0.0_:
+
+PERÍODO: ${document.getElementById('sem-de').value || '?'} a ${document.getElementById('sem-ate').value || '?'}
+Posts publicados: ${posts}
+
+MÉTRICAS:
+Alcance total: ${alcance} | Impressões: ${impressoes}
+Seguidores: +${ganhos} / -${perdidos} = saldo ${saldo > 0 ? '+' : ''}${saldo}
+Visitas ao perfil: ${visitas} | Cliques no link: ${cliques}
+Total curtidas: ${curtidas} | Total salvamentos: ${saves}
+Melhor horário: ${horario || 'não informado'}
+${obs ? `Observações: ${obs}` : ''}
+
+## DIAGNÓSTICO DA SEMANA
+[Análise geral — o que os números revelam sobre o momento do perfil]
+
+## CRESCIMENTO
+[Análise do saldo e ritmo — está acelerando ou desacelerando?]
+
+## ENGAJAMENTO
+[Qualidade do engajamento — ratio saves/curtidas, o que significa]
+
+## ESTRATÉGIA PARA A PRÓXIMA SEMANA
+[Plano concreto: o que manter, mudar e testar]
+
+## CALENDÁRIO SUGERIDO
+[7 dias — tipo de conteúdo + gancho específico por dia]
+
+## META REALISTA
+[Projeção das próximas 2 semanas com base nesses dados]`;
+
+    } else {
+      const postsData = [];
+      for (let i = 1; i <= postsCount; i++) {
+        if (!document.getElementById(`pb-${i}`)) continue;
+        postsData.push({
+          num: i,
+          tipo: document.getElementById(`pp-tipo-${i}`)?.value || '',
+          alcance: parseInt(document.getElementById(`pp-alc-${i}`)?.value) || 0,
+          curtidas: parseInt(document.getElementById(`pp-cur-${i}`)?.value) || 0,
+          saves: parseInt(document.getElementById(`pp-sav-${i}`)?.value) || 0,
+          shares: parseInt(document.getElementById(`pp-sha-${i}`)?.value) || 0
+        });
+      }
+      if (!postsData.length) throw new Error('Adicione pelo menos 1 post para analisar');
+
+      prompt = `Compare esses ${postsData.length} posts do @box0.0_ e identifique padrões estratégicos:
+
+${postsData.map(p => `Post ${p.num}: ${p.tipo} | Alcance: ${p.alcance} | Curtidas: ${p.curtidas} | Saves: ${p.saves} | Shares: ${p.shares}`).join('\n')}
+
+## RANKING DE PERFORMANCE
+[Do melhor ao pior com justificativa dos dados]
+
+## PADRÕES IDENTIFICADOS
+[O que os posts que performaram melhor têm em comum]
+
+## TIPO DE CONTEÚDO CAMPEÃO
+[Qual formato está gerando mais resultado para o BOX 0.0]
+
+## O QUE PARAR DE FAZER
+[O que não está valendo o esforço baseado nos dados]
+
+## O QUE DOBRAR A APOSTA
+[O que claramente funciona e merece mais frequência]
+
+## FÓRMULA DO PRÓXIMO POST
+[A receita do post ideal para o BOX 0.0 agora — baseado nos dados]`;
+    }
+
+    const texto = await chamarIA(prompt, [], sistemaEstr);
+    renderEstrategia(texto);
+    localStorage.setItem('boxmkt_ultima_analise', Date.now().toString());
+    verificarAlerta();
+  } catch(e) {
+    document.getElementById('estr-resultado').innerHTML = `<div class="card"><div style="color:#ef4444;font-size:14px">⚠ ${e.message}</div></div>`;
+  }
+  btn.disabled = false;
+  const labels = { post: '✦ Analisar este post com IA', semana: '✦ Analisar semana com IA', periodo: '✦ Comparar e gerar estratégia' };
+  btn.textContent = labels[modo];
+}
+
+function renderEstrategia(texto) {
+  const secs = parseSecs(texto);
+  const icons = { DIAGNÓSTICO:'🔍', FORTES:'✅', ATENÇÃO:'⚠️', ALGORITMO:'🤖', RECOMENDAÇÕES:'🎯', PRÓXIMO:'➡️', CRESCIMENTO:'📈', ENGAJAMENTO:'❤️', ESTRATÉGIA:'🗺️', CALENDÁRIO:'📅', META:'🏆', RANKING:'🥇', PADRÕES:'🔄', CAMPEÃO:'🏆', PARAR:'🛑', DOBRAR:'🚀', FÓRMULA:'✨' };
+  let html = `<div style="margin-top:1rem"><div class="res-header"><div class="res-titulo">Análise estratégica</div><button class="btn-copy" onclick="navigator.clipboard.writeText(${JSON.stringify(texto)}).then(()=>mostrarToast('✓ Copiado!'))">📋 Copiar</button></div>`;
+  secs.forEach(s => {
+    const icon = Object.entries(icons).find(([k]) => s.t.toUpperCase().includes(k))?.[1] || '💡';
+    html += `<div class="res-bloco"><div class="res-bloco-titulo">${icon} ${s.t}</div><div class="res-texto">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar</button></div>`;
+  });
+  html += '</div>';
+  document.getElementById('estr-resultado').innerHTML = html;
+}
+
+function verificarAlerta() {
+  const ultima = localStorage.getItem('boxmkt_ultima_analise');
+  const dias = parseInt(cfg.alerta || 3);
+  const limite = dias * 24 * 60 * 60 * 1000;
+  const banner = document.getElementById('alerta-metricas');
+  if (!banner) return;
+  if (!ultima || (Date.now() - parseInt(ultima)) > limite) {
+    banner.style.display = 'flex';
+    document.getElementById('alerta-desc').textContent = ultima
+      ? `Última análise há ${Math.floor((Date.now()-parseInt(ultima))/(24*60*60*1000))} dias — hora de atualizar!`
+      : 'Nenhuma análise registrada ainda — comece agora!';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// ============================================================
+// INTELIGÊNCIA
+// ============================================================
+function selIntelTab(t, el) {
+  intelTab = t;
+  document.querySelectorAll('.intel-tab').forEach(b => b.classList.remove('ativo'));
+  el.classList.add('ativo');
+  const lbs = { youtube:'Buscar vídeos virais do nicho', search:'Pesquisar tendências no Google', gemini:'Analisar mercado com IA' };
+  document.getElementById('btn-intel').textContent = lbs[t];
+}
+
+async function executarIntel() {
+  const btn = document.getElementById('btn-intel');
+  btn.disabled = true; btn.textContent = '⟳ Buscando...';
+  document.getElementById('intel-resultado').innerHTML = `<div class="card"><div class="load-wrap"><span class="load-icon">⟳</span><div class="load-txt">Buscando dados reais do nicho...</div><div class="load-sub">Aguarde alguns segundos</div></div></div>`;
+  try {
+    if (intelTab === 'youtube') await intelYT();
+    else if (intelTab === 'search') await intelSearch();
+    else await intelGemini();
+  } catch(e) {
+    document.getElementById('intel-resultado').innerHTML = `<div class="card"><div style="color:#ef4444;font-size:14px">⚠ ${e.message}</div><div style="font-size:12px;color:#999;margin-top:8px">Verifique suas chaves de API nas configurações.</div></div>`;
+  }
+  const lbs = { youtube:'Buscar vídeos virais do nicho', search:'Pesquisar tendências no Google', gemini:'Analisar mercado com IA' };
+  btn.disabled = false; btn.textContent = lbs[intelTab];
+}
+
+async function intelYT() {
+  const [r1, r2] = await Promise.all([
+    buscarYT('estética automotiva antes depois resultado'),
+    buscarYT('detailing polimento carro brasil zona sul')
+  ]);
+  const items = [...r1, ...r2].slice(0, 6);
+  let html = `<div class="card"><div class="card-titulo">▶ Vídeos em destaque no nicho</div><div class="card-desc">O que está performando no YouTube Brasil sobre estética automotiva agora — vira pauta para o BOX 0.0.</div></div>`;
+  items.forEach(item => {
+    const t = item.snippet?.title || '';
+    const c = item.snippet?.channelTitle || '';
+    const d = item.snippet?.description?.slice(0, 100) || '';
+    html += `<div class="card" style="margin-bottom:8px"><div style="font-size:14px;font-weight:500;color:#111;margin-bottom:4px;line-height:1.4">${t}</div><div style="font-size:12px;color:#999;margin-bottom:8px">${c}</div><div style="font-size:13px;color:#444;background:#f5f5f0;border-radius:6px;padding:8px 10px">${d}...</div><div style="margin-top:8px;font-size:12px;color:#555;background:#f0fdf4;border-radius:6px;padding:6px 10px">💡 <strong>Pauta BOX 0.0:</strong> Adapte esse formato para o seu próximo atendimento</div></div>`;
+  });
+  document.getElementById('intel-resultado').innerHTML = html;
+}
+
+async function intelSearch() {
+  const [r1, r2] = await Promise.all([
+    buscarGSearch('estética automotiva zona sul são paulo serviços preço'),
+    buscarGSearch('polimento cristalização carro vale a pena quanto tempo dura')
+  ]);
+  let html = `<div class="card"><div class="card-titulo">🔍 O que as pessoas estão buscando</div><div class="card-desc">Dúvidas reais sobre estética automotiva — cada uma é uma pauta de conteúdo educativo.</div></div>`;
+  [...r1.slice(0,3), ...r2.slice(0,3)].forEach(item => {
+    html += `<div class="card" style="margin-bottom:8px"><div style="font-size:14px;font-weight:500;color:#1a73e8;margin-bottom:4px;line-height:1.4">${item.title}</div><div style="font-size:11px;color:#999;margin-bottom:6px">${item.displayLink}</div><div style="font-size:13px;color:#444;line-height:1.5">${item.snippet?.slice(0,150) || ''}...</div><div style="font-size:12px;color:#111;background:#f0f0ec;border-radius:6px;padding:6px 10px;margin-top:8px;font-weight:500">💡 Pauta: "${item.title}" → carrossel educativo ou reel respondendo essa dúvida</div></div>`;
+  });
+  document.getElementById('intel-resultado').innerHTML = html;
+}
+
+async function intelGemini() {
+  const prompt = `Analise o mercado de estética automotiva no Brasil para o @box0.0_ (premium, Vila Natal, Zona Sul de SP, atende sábado e domingo, público que valoriza qualidade) e retorne:
+
+## TENDÊNCIAS DO NICHO AGORA
+[5 tendências de conteúdo funcionando no Instagram para estética automotiva premium — específico e prático]
+
+## FORMATOS QUE MAIS ENGAJAM
+[4 formatos com melhor resultado atual com explicação prática de como o BOX 0.0 pode usar]
+
+## DÚVIDAS FREQUENTES DOS CLIENTES
+[8 perguntas reais que donos de carro fazem — cada uma é uma pauta de conteúdo educativo para o BOX 0.0]
+
+## ÂNGULOS PARA SE DIFERENCIAR
+[5 formas de se destacar da concorrência no conteúdo — específico para o posicionamento premium do BOX 0.0]
+
+## PAUTA DA SEMANA
+[7 sugestões concretas, uma por dia, com tipo de conteúdo + gancho específico]
+
+Seja direto e prático. Foco em um negócio local premium.`;
+
+  const texto = await chamarIA(prompt);
+  const secs = parseSecs(texto);
+  const icons = { TENDÊNCIAS:'📈', FORMATOS:'🎯', DÚVIDAS:'❓', DIFERENCIAR:'⭐', ÂNGULOS:'⭐', PAUTA:'📅' };
+  let html = '';
+  secs.forEach(s => {
+    const icon = Object.entries(icons).find(([k]) => s.t.toUpperCase().includes(k))?.[1] || '💡';
+    html += `<div class="card"><div class="card-titulo">${icon} ${s.t}</div><div style="font-size:14px;line-height:1.7;color:#333;white-space:pre-wrap;margin-top:8px">${s.c}</div><button class="btn-copy" style="margin-top:12px;font-size:11px" onclick="navigator.clipboard.writeText(${JSON.stringify(s.c)}).then(()=>mostrarToast('✓ Copiado!'))">Copiar</button></div>`;
+  });
+  document.getElementById('intel-resultado').innerHTML = html;
+}
+
+function renderCalendario() {
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const tipos = ['🏆','📸','🎓','🎬','🔥','🎯','✨'];
+  const labels = ['Destaque','Antes/Depois','Educativo','Bastidor','Inspiracional','Oferta','Resultado'];
+  const hoje = new Date().getDay();
+  document.getElementById('semana-grid').innerHTML = dias.map((d,i) =>
+    `<div class="dia-card ${i===hoje?'hoje':''}"><div class="dia-nome">${d}</div><div class="dia-tipo">${tipos[i]}</div><div class="dia-lbl">${labels[i]}</div></div>`
+  ).join('');
+}
+
+function abrirConfig() { document.getElementById('modal-config').classList.add('aberto'); }
+function fecharConfig() { document.getElementById('modal-config').classList.remove('aberto'); }
+function toggleVis(id, btn) { const i = document.getElementById(id); i.type = i.type==='password'?'text':'password'; btn.textContent = i.type==='password'?'👁':'🙈'; }
+function mostrarToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('visivel'); setTimeout(()=>t.classList.remove('visivel'), 2500); }
+document.getElementById('modal-config').addEventListener('click', function(e) { if(e.target===this) fecharConfig(); });
+
+// TOKEN GATE
+const TOKEN_KEY = 'boxmkt_token_ts';
+const SETE_DIAS = 7*24*60*60*1000;
+(function() {
+  const ts = localStorage.getItem(TOKEN_KEY);
+  if (!ts || (Date.now()-parseInt(ts)) >= SETE_DIAS) {
+    window.location.replace(window.location.href.replace(/boxmkt\.html.*$/, '') + 'index.html');
+  }
+})();
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+carregarConfig();
+renderCalendario();
+</script>
+</body>
+</html>

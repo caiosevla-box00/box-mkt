@@ -1262,7 +1262,7 @@ function toggleVis(id,btn){const i=document.getElementById(id);i.type=i.type==='
 function mostrarToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('visivel');setTimeout(()=>t.classList.remove('visivel'),2500);}
 document.getElementById('modal-config').addEventListener('click',function(e){if(e.target===this)fecharConfig();});
 
-const TK='bxmkt_tk';const SD=7*24*60*60*1000;
+const TK='boxmkt_token_ts';const SD=7*24*60*60*1000;
 (function(){const ts=localStorage.getItem(TK);if(!ts||(Date.now()-parseInt(ts))>=SD){const base=window.location.href.replace(/boxmkt.html.*$/,'');window.location.replace(base+'index.html');}})();
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});

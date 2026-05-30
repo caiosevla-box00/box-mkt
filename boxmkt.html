@@ -1185,70 +1185,70 @@ async function intelYT(){
 
 async function intelTrends(){
   if(!cfg.gemini&&!cfg.groq)throw new Error('Configure o Gemini ou Groq nas ⚙ Configurações');
-  const prompt=`Analise as tendências atuais de buscas no Google relacionadas a estética automotiva no Brasil, especialmente São Paulo Zona Sul.
+  const prompt=`Você é especialista em marketing digital para estética automotiva no Brasil.
 
-Baseado no comportamento atual do mercado, retorne:
+Analise as tendências de buscas relacionadas a estética automotiva no Brasil, especialmente São Paulo Zona Sul, e retorne EXATAMENTE nesse formato:
 
-TERMOS EM ALTA
-[8 termos que as pessoas mais buscam sobre estética automotiva no Brasil agora]
+## TERMOS EM ALTA
+Liste 8 termos que as pessoas mais buscam sobre estética automotiva no Brasil agora.
 
-PERGUNTAS FREQUENTES
-[8 perguntas reais que donos de carro fazem no Google — cada uma é uma pauta]
+## PERGUNTAS FREQUENTES
+Liste 8 perguntas reais que donos de carro fazem no Google — cada uma é uma pauta de conteúdo.
 
-SAZONALIDADE
-[O que está em alta nesse período do ano e por quê]
+## SAZONALIDADE
+O que está em alta nesse período do ano e por quê.
 
-OPORTUNIDADES DE CONTEÚDO
-[5 pautas específicas para o BOX 0.0 baseadas nas buscas]
-
-Seja específico para o mercado brasileiro e zona sul de SP.`;
+## OPORTUNIDADES DE CONTEÚDO
+Liste 5 pautas específicas para o BOX 0.0 baseadas nas buscas.`;
   const texto=await chamarIA(prompt);
-  const linhas=texto.split('\n').map(l=>l.trim()).filter(l=>l);
-  const icons={'TERMOS':'🔍','PERGUNTAS':'❓','SAZONALIDADE':'📅','OPORTUNIDADES':'💡'};
-  let sec='',txt=[],secs=[];
-  linhas.forEach(l=>{
-    const isH=Object.keys(icons).some(k=>l.toUpperCase().startsWith(k));
-    if(isH){if(sec&&txt.length)secs.push({t:sec,c:txt.join('\n')});sec=l;txt=[];}else txt.push(l);
-  });
-  if(sec&&txt.length)secs.push({t:sec,c:txt.join('\n')});
-  let html='';
-  secs.forEach(s=>{
-    const icon=Object.entries(icons).find(([k])=>s.t.toUpperCase().startsWith(k))?.[1]||'💡';
-    const idx=_reg(s.c);
-    html+=`<div class="intel-card"><div class="intel-titulo">${icon} ${s.t}</div><div style="font-size:13px;color:var(--texto2);line-height:1.7;margin-top:8px;white-space:pre-wrap">${s.c}</div><button class="btn-ghost" style="margin-top:8px;font-size:11px" onclick="_cop(${idx})">Copiar</button></div>`;
-  });
-  document.getElementById('intel-resultado').innerHTML=html;
+  renderIntelSecs(texto,{'TERMOS':'🔍','PERGUNTAS':'❓','SAZONALIDADE':'📅','OPORTUNIDADES':'💡'});
 }
 
 async function intelIA(){
-  const prompt=`Analise o mercado de estética automotiva premium no Brasil para o @box0.0_ (Vila Natal, Zona Sul de SP, atende sábado e domingo, público que valoriza qualidade) e retorne:
+  if(!cfg.gemini&&!cfg.groq)throw new Error('Configure o Gemini ou Groq nas ⚙ Configurações');
+  const prompt=`Você é especialista em marketing digital para estética automotiva premium.
 
-TENDÊNCIAS DO NICHO AGORA
-[5 tendências de conteúdo funcionando no Instagram para estética automotiva premium]
+Analise o mercado para o @box0.0_ (Vila Natal, Zona Sul de SP) e retorne EXATAMENTE nesse formato:
 
-FORMATOS QUE MAIS ENGAJAM
-[4 formatos com melhor resultado — com explicação prática de como o BOX 0.0 aplica]
+## TENDÊNCIAS DO NICHO AGORA
+Liste 5 tendências de conteúdo funcionando no Instagram para estética automotiva premium.
 
-DÚVIDAS FREQUENTES DOS CLIENTES
-[8 perguntas reais — cada uma é uma pauta de conteúdo educativo]
+## FORMATOS QUE MAIS ENGAJAM
+Liste 4 formatos com melhor resultado e como o BOX 0.0 aplica cada um.
 
-DIFERENCIAIS PARA EXPLORAR
-[5 ângulos únicos para o BOX 0.0 se destacar no conteúdo]
+## DÚVIDAS FREQUENTES DOS CLIENTES
+Liste 8 perguntas reais de donos de carro — cada uma é uma pauta de conteúdo educativo.
 
-PAUTA DA SEMANA
-[Segunda a domingo — tipo + gancho específico por dia]`;
+## DIFERENCIAIS PARA EXPLORAR
+Liste 5 ângulos únicos para o BOX 0.0 se destacar.
+
+## PAUTA DA SEMANA
+Segunda a domingo — tipo de conteúdo e gancho específico por dia.`;
   const texto=await chamarIA(prompt);
-  const linhas=texto.split('\n').map(l=>l.trim()).filter(l=>l);
-  const icons={'TENDÊNCIAS':'📈','FORMATOS':'🎯','DÚVIDAS':'❓','DIFERENCIAIS':'⭐','PAUTA':'📅'};
-  let sec='',txt=[],secs=[];
-  linhas.forEach(l=>{
-    const isH=Object.keys(icons).some(k=>l.toUpperCase().startsWith(k));
-    if(isH){if(sec&&txt.length)secs.push({t:sec,c:txt.join('\n')});sec=l;txt=[];}else txt.push(l);
-  });
-  if(sec&&txt.length)secs.push({t:sec,c:txt.join('\n')});
+  renderIntelSecs(texto,{'TENDÊNCIAS':'📈','FORMATOS':'🎯','DÚVIDAS':'❓','DIFERENCIAIS':'⭐','PAUTA':'📅'});
+}
+
+function renderIntelSecs(texto, icons){
+  // parser robusto via ## headers
+  const secs=[];
+  const regex=/##\s+(.+?)\n([\s\S]*?)(?=##|$)/g;
+  let m;
+  while((m=regex.exec(texto))!==null){
+    const t=m[1].trim();
+    const c=m[2].trim();
+    if(c) secs.push({t,c});
+  }
+
+  // fallback: se não achou seções com ##, mostra tudo
+  if(!secs.length){
+    const idx=_reg(texto);
+    document.getElementById('intel-resultado').innerHTML=`<div class="intel-card"><div class="intel-titulo">✦ Análise do mercado</div><div style="font-size:13px;color:var(--texto2);line-height:1.7;margin-top:8px;white-space:pre-wrap">${texto}</div><button class="btn-ghost" style="margin-top:8px;font-size:11px" onclick="_cop(${idx})">Copiar</button></div>`;
+    return;
+  }
+
   let html='';
   secs.forEach(s=>{
-    const icon=Object.entries(icons).find(([k])=>s.t.toUpperCase().startsWith(k))?.[1]||'💡';
+    const icon=Object.entries(icons).find(([k])=>s.t.toUpperCase().includes(k))?.[1]||'💡';
     const idx=_reg(s.c);
     html+=`<div class="intel-card"><div class="intel-titulo">${icon} ${s.t}</div><div style="font-size:13px;color:var(--texto2);line-height:1.7;margin-top:8px;white-space:pre-wrap">${s.c}</div><button class="btn-ghost" style="margin-top:8px;font-size:11px" onclick="_cop(${idx})">Copiar</button></div>`;
   });

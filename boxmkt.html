@@ -81,12 +81,12 @@ main{max-width:820px;margin:0 auto;padding:1.5rem 1.25rem 4rem}
 .prog-label{font-size:11px;color:var(--texto2);margin-bottom:6px;display:flex;justify-content:space-between}
 
 /* TIPO GRID */
-.tipo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:1.25rem}
-.tipo-btn{border:1px solid var(--borda);background:var(--preto3);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.tipo-btn{border:1px solid var(--borda);background:var(--preto3);border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s}
 .tipo-btn:hover{border-color:#444}
 .tipo-btn.ativo{background:var(--verde);border-color:var(--verde)}
-.tipo-btn .ti{font-size:18px;margin-bottom:3px;display:block}
-.tipo-btn .tnome{font-size:10px;font-weight:600;color:var(--texto2)}
+.tipo-btn .ti{font-size:22px;margin-bottom:4px;display:block}
+.tipo-btn .tnome{font-size:11px;font-weight:600;color:var(--texto2)}
 .tipo-btn.ativo .tnome{color:#111}
 
 /* UPLOAD */
@@ -521,6 +521,12 @@ main{max-width:820px;margin:0 auto;padding:1.5rem 1.25rem 4rem}
       <a class="cfg-link" href="https://console.cloud.google.com" target="_blank">→ Obter em console.cloud.google.com</a>
     </div>
 
+    <div class="cfg-field">
+      <label class="cfg-lbl">Search Engine ID (CX) <span class="cfg-st ok">Configurado</span></label>
+      <div class="cfg-desc">Identificador do mecanismo de busca BOX MKT — não é segredo.</div>
+      <input type="text" class="campo-input" id="cfg-cx" value="93deaf3f6ec6f4c49">
+    </div>
+
     <div class="modal-sec">
       <div class="modal-sec-titulo">Identidade do negócio</div>
       <div class="cfg-field"><label class="cfg-lbl">Instagram @</label><input type="text" class="campo-input" id="cfg-instagram" value="@box0.0_"></div>
@@ -605,7 +611,13 @@ let cfg={}, tipoSel='carrossel', intelTab='youtube', modoEstr='post', fotos=[], 
 
 function carregarConfig(){
   try{
-    cfg=JSON.parse(localStorage.getItem('bxmkt_v6')||'{}');
+    // tenta nova chave primeiro, depois chaves antigas para migrar
+    const raw = localStorage.getItem('bxmkt_v6') 
+      || localStorage.getItem('boxmkt_cfg_v4')
+      || localStorage.getItem('boxmkt_cfg_v3')
+      || localStorage.getItem('boxmkt_cfg')
+      || '{}';
+    cfg=JSON.parse(raw);
     if(cfg.gemini){document.getElementById('cfg-gemini').value=cfg.gemini;atSt('st-gemini',true);}
     if(cfg.groq){document.getElementById('cfg-groq').value=cfg.groq;atSt('st-groq',true);}
     if(cfg.google){document.getElementById('cfg-google').value=cfg.google;atSt('st-google',true);}
@@ -613,6 +625,10 @@ function carregarConfig(){
     if(cfg.cidade)document.getElementById('cfg-cidade').value=cfg.cidade;
     if(cfg.dif)document.getElementById('cfg-dif').value=cfg.dif;
     if(cfg.alerta)document.getElementById('cfg-alerta').value=cfg.alerta;
+    // migra para nova chave se veio de versão antiga
+    if(!localStorage.getItem('bxmkt_v6') && (cfg.gemini||cfg.groq||cfg.google)){
+      localStorage.setItem('bxmkt_v6', JSON.stringify(cfg));
+    }
     verificarAlerta();
   }catch(e){}
 }
@@ -624,6 +640,7 @@ function salvarConfig(){
     gemini:document.getElementById('cfg-gemini').value.trim(),
     groq:document.getElementById('cfg-groq').value.trim(),
     google:document.getElementById('cfg-google').value.trim(),
+    cx:document.getElementById('cfg-cx').value.trim()||'93deaf3f6ec6f4c49',
     instagram:document.getElementById('cfg-instagram').value.trim(),
     cidade:document.getElementById('cfg-cidade').value.trim(),
     dif:document.getElementById('cfg-dif').value.trim(),

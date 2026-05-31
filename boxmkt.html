@@ -754,40 +754,44 @@ async function gerarConteudo(){
 
 function buildPrompt(tipo,ctx){
   const base=`CONTEXTO DO ATENDIMENTO:\n${ctx||'Crie conteúdo geral sobre estética automotiva para o BOX 0.0.'}\n\n`;
-  const htag=`\nHASHTAGS (exatamente 5, no final da legenda, separadas por espaço):
-2 grandes: #esteticaautomotiva #cardetailing
-2 locais: 2 das: #ZonaSulSP #EsteticaAutomotivaSP #GrajaU #InterlagosSP #SantoAmaroSP
-1 média: 1 das: #detalhamentoautomotivo #lavagemautomotiva #polimentoautomotivo #detailing
+  const htag=`\nHASHTAGS
+Use exatamente 5 hashtags nessa seção separada:
+2 grandes obrigatórias: #esteticaautomotiva #cardetailing
+2 locais — escolha 2: #ZonaSulSP #EsteticaAutomotivaSP #GrajaU #InterlagosSP #SantoAmaroSP
+1 média — escolha 1: #detalhamentoautomotivo #lavagemautomotiva #polimentoautomotivo #detailing #cardetail
 
-IMPORTANTE: Retorne APENAS o texto limpo. Sem markdown, sem **negrito**, sem _itálico_.`;
+Escreva só as 5 hashtags separadas por espaço, nada mais.
+
+IMPORTANTE: Retorne APENAS texto limpo. Sem markdown, sem **negrito**, sem _itálico_.`;
 
   const p={
-    carrossel:base+`Crie um carrossel para Instagram. Retorne nesse formato exato:
+    carrossel:base+`Crie um carrossel para Instagram no estilo autêntico do @box0.0_. Retorne nesse formato exato:
 
 LEGENDA
-[Começa com "@box0.0_ |" + gancho forte. 3-4 linhas. Tom direto e autêntico. CTA claro. Localização Vila Natal/Zona Sul. Máx 3 emojis.]
+[Começa com "@box0.0_ |" + gancho forte e direto. 3-4 linhas. Tom de quem orgulha do trabalho, não de vendedor. CTA claro: "chama no direct" ou "manda QUERO". Localização Vila Natal/Zona Sul. Máx 3 emojis posicionados estrategicamente. Inclui preço real se disponível.]
 ${htag}
 
 SLIDE 1 — CAPA
-[Texto de até 8 palavras para parar o scroll. Use os slogans da marca se couber.]
+[Frase curta e impactante — máx 6 palavras. Pode usar: "Não é lavagem. É transformação." ou "Resultado ou Nada." ou criar algo específico para esse atendimento.]
 
 SLIDE 2 — SITUAÇÃO INICIAL
-[O problema ou estado do carro antes]
+[Descreve o estado do carro de forma concreta e visual — como estava antes. Ex: "Faróis tão opacos que mal iluminavam à noite" não "Faróis desgastados".]
 
 SLIDE 3 — O PROCESSO
-[O que foi feito, o capricho, os produtos]
+[O que foi feito de forma específica — produtos usados, técnica, tempo. Ex: "Aplicação de compound + polish + selante em 3 etapas" não "tecnologia de ponta".]
 
 SLIDE 4 — O RESULTADO
-[A transformação — concreto e impactante]
+[O resultado concreto e como o cliente reagiu. Ex: "Transparência 100% restaurada. Cliente não acreditou no antes e depois." ]
 
 SLIDE 5 — PROVA / DETALHE
-[Detalhe visual que comprova o resultado]
+[Instrução visual específica para a foto/frame — o que mostrar para provar o resultado.]
 
 SLIDE 6 — CHAMADA PARA AÇÃO
-[Preço se disponível. "Chama no direct" ou "Manda QUERO". Vagas limitadas se couber.]
+[Preço real + CTA direto + urgência real. Ex: "Revitalização R$150 — resultado em 1h. Vagas limitadas. Manda QUERO no direct agora."]
 
 SCORE
-[Nota de 0 a 100 e 1 linha explicando o motivo]`,
+[Apenas um número de 0 a 100]
+[Uma linha explicando o motivo]`,
 
     story:base+`Crie um story para Instagram. Retorne:
 
@@ -921,7 +925,7 @@ function renderResultado(texto,tipo){
     const isLegenda=tUp.startsWith('LEGENDA');
     const isSlide=tUp.startsWith('SLIDE');
     const isScore=tUp.startsWith('SCORE');
-    const isHashtag=tUp.startsWith('HASHTAG')||sec.conteudo.includes('#esteticaautomotiva');
+    const isHashtag=tUp.startsWith('HASHTAG') || (sec.conteudo.match(/#\w+/g)||[]).length>=3;
 
     if(isLegenda){
       html+=`<div class="legenda-card">`;
@@ -942,9 +946,12 @@ function renderResultado(texto,tipo){
       html+=`<div class="slide-header">${num?`<div class="slide-num">${num}</div>`:''}<div class="slide-label">${label}</div><button class="btn-ghost" onclick="_cop(${_reg(sec.conteudo)})">Copiar</button></div>`;
       html+=`<div class="slide-body"><div class="slide-texto">${sec.conteudo}</div></div></div>`;
     } else if(isScore){
-      const n=parseInt((sec.conteudo.match(/(\d{1,3})/)||['','78'])[1]);
+      const linhasScore = sec.conteudo.split('\n').filter(l=>l.trim());
+      const numLine = linhasScore.find(l=>l.match(/^\d{1,3}$/));
+      const n = parseInt(numLine||'78');
+      const descLine = linhasScore.filter(l=>!l.match(/^\d{1,3}$/)).join(' ').trim();
       const cor=n>=80?'#22c55e':n>=65?'#f59e0b':'#ef4444';
-      html+=`<div class="slide-card"><div class="score-row"><div class="score-num" style="color:${cor}">${n}</div><div class="score-info"><div class="score-lbl">Score de qualidade</div><div class="score-bar-w"><div class="score-bar" style="width:${n}%;background:${cor}"></div></div></div></div><div style="font-size:12px;color:#555;padding:0 14px 12px">${sec.conteudo.replace(/\d+/,'').trim()}</div></div>`;
+      html+=`<div class="slide-card"><div class="score-row"><div class="score-num" style="color:${cor}">${n}</div><div class="score-info"><div class="score-lbl">Score de qualidade</div><div class="score-bar-w"><div class="score-bar" style="width:${n}%;background:${cor}"></div></div></div></div><div style="font-size:12px;color:#555;padding:0 14px 12px">${descLine}</div></div>`;
     } else {
       html+=`<div class="slide-card">`;
       html+=`<div class="slide-header"><div class="slide-label">${sec.titulo}</div><button class="btn-ghost" onclick="_cop(${_reg(sec.conteudo)})">Copiar</button></div>`;
